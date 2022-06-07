@@ -1,0 +1,6 @@
+#metrics:
+#  reporters:
+#    - type: statsd
+#      host: localhost
+#      port: 8125
+#      prefix: test.prefix

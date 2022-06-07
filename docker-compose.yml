@@ -1,0 +1,129 @@
+version: '3'
+
+networks:
+  sre-lab:
+    driver: bridge
+
+volumes:
+  sre-lab:
+    driver: local
+
+services:
+
+  postgresql:
+    image: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=morpheus
+      - POSTGRES_PASSWORD=findneo
+    networks:
+      - sre-lab
+    volumes:
+      - ./scripts/postgres-bootstrap.sql:/docker-entrypoint-initdb.d/postgres-bootstrap.sql
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+    - node.name=es01
+    - bootstrap.memory_lock=true
+    - cluster.name=docker-cluster
+    - cluster.routing.allocation.disk.threshold_enabled=false
+    - discovery.type=single-node
+    - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+    volumes:
+    - sre-lab:/usr/share/elasticsearch/data
+    ports:
+    - 9200:9200
+    networks:
+    - sre-lab
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.2.2
+    container_name: kibana
+    hostname: kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+    - 5601:5601
+    networks:
+    - sre-lab
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:8.2.2
+    container_name: apm-server
+    hostname: apm-server
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+    - 8200:8200
+    networks:
+    - sre-lab
+    command: >
+       apm-server -e
+         -E apm-server.rum.enabled=true
+         -E setup.kibana.host=kibana:5601
+         -E setup.template.settings.index.number_of_replicas=0
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=kibana:5601
+         -E output.elasticsearch.hosts=["elasticsearch:9200"]
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+
+
+  api:
+    build:
+      context: ./
+      dockerfile: ./api/Dockerfile
+    environment:
+      - DB_HOST=postgresql
+      - DB_USERNAME=morpheus
+      - DB_PASSWORD=findneo
+      - DB_NAME=sre-lab
+      - OTEL_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:8200
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=finance-api,service.version=1.0
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - "postgresql"
+    networks:
+      - sre-lab
+    healthcheck:
+      interval: 5s
+      retries: 10
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
+      

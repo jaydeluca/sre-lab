@@ -1,0 +1,33 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+apply plugin: 'java'
+apply plugin: "com.github.johnrengelman.shadow"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group 'org.srelab'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.21'
+    implementation 'io.dropwizard:dropwizard-core:2.1.0'
+    implementation 'com.authzee.kotlinguice4:kotlin-guice:1.3.0'
+    implementation 'io.dropwizard.metrics:metrics-core:4.2.9'
+}
+
+//shadowJar {
+//    mergeServiceFiles()
+//    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+//    manifest {
+//        attributes 'Main-Class': 'org.srelab.Application'
+//    }
+//}
+//

@@ -1,16 +1,12 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.21'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
-apply plugin: 'java'
-apply plugin: "com.github.johnrengelman.shadow"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-group 'org.srelab'
+group 'dropwizard'
 version '1.0-SNAPSHOT'
+
+apply plugin: 'application'
 
 repositories {
     mavenCentral()
@@ -23,11 +19,31 @@ dependencies {
     implementation 'io.dropwizard.metrics:metrics-core:4.2.9'
 }
 
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+
+// ## for Application.run
+mainClassName = 'org.srelab.Application'
+run {
+    args = ['server', 'config.yml']
+}
+
 shadowJar {
     mergeServiceFiles()
     exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
     manifest {
-        attributes 'Main-Class': 'org.srelab.Application'
+        attributes 'Implementation-Title': rootProject.name
+        attributes 'Implementation-Version': rootProject.version
+        attributes 'Implementation-Vendor-Id': rootProject.group
+        attributes 'Built-By': InetAddress.localHost.hostName
+        attributes 'Created-By': 'Gradle ' + gradle.gradleVersion
+        attributes 'Main-Class': 'KHelloWorldKt'
     }
+    archiveName 'sre-lab.jar'
 }
 

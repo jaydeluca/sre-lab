@@ -9,3 +9,11 @@ Prerequisites:
   - 9200 (elasticsearch)
   - 5601 (kibana)
   - 8200 (apm server)
+
+
+
+TODO:
+- [ ] ship app logs to elasticsearch
+- [x] create load generator (maybe rewrite as gatling for more complex scenarios)
+- [ ] interface for scenarios
+- [ ] ability to reset

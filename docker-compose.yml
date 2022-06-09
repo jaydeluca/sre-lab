@@ -125,4 +125,12 @@ services:
       interval: 5s
       retries: 10
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
+
+  load-generator:
+    image: williamyeh/hey
+    networks:
+    - sre-lab
+    command: -z 5m -c 2 http://api:8080/orders
+
+
       

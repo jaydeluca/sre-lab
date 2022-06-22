@@ -9,27 +9,36 @@ volumes:
     driver: local
 
 services:
-
-  postgresql:
-    image: postgres
-    container_name: postgres
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.16.2
+    container_name: apm-server
+    hostname: apm-server
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
     ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=morpheus
-      - POSTGRES_PASSWORD=findneo
+    - 8200:8200
     networks:
-      - sre-lab
-    volumes:
-      - ./scripts/postgres-bootstrap.sql:/docker-entrypoint-initdb.d/postgres-bootstrap.sql
+    - sre-lab
+    command: >
+      apm-server -e
+        -E apm-server.rum.enabled=true
+        -E setup.kibana.host=kibana:5601
+        -E setup.template.settings.index.number_of_replicas=0
+        -E apm-server.kibana.enabled=true
+        -E apm-server.kibana.host=kibana:5601
+        -E output.elasticsearch.hosts=["elasticsearch:9200"]
     healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U postgres"]
-        interval: 5s
-        timeout: 5s
-        retries: 5
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
     container_name: elasticsearch
     hostname: elasticsearch
     environment:
@@ -55,7 +64,7 @@ services:
       test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.2.2
+    image: docker.elastic.co/kibana/kibana:7.16.2
     container_name: kibana
     hostname: kibana
     depends_on:
@@ -73,34 +82,23 @@ services:
       retries: 20
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
 
-
-  apm-server:
-    image: docker.elastic.co/apm/apm-server:8.2.2
-    container_name: apm-server
-    hostname: apm-server
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
-    cap_drop: ["ALL"]
+  postgresql:
+    image: postgres
+    container_name: postgres
     ports:
-    - 8200:8200
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=morpheus
+      - POSTGRES_PASSWORD=findneo
     networks:
-    - sre-lab
-    command: >
-       apm-server -e
-         -E apm-server.rum.enabled=true
-         -E setup.kibana.host=kibana:5601
-         -E setup.template.settings.index.number_of_replicas=0
-         -E apm-server.kibana.enabled=true
-         -E apm-server.kibana.host=kibana:5601
-         -E output.elasticsearch.hosts=["elasticsearch:9200"]
+      - sre-lab
+    volumes:
+      - ./scripts/postgres-bootstrap.sql:/docker-entrypoint-initdb.d/postgres-bootstrap.sql
     healthcheck:
-      interval: 10s
-      retries: 20
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
 
   api:
@@ -112,9 +110,10 @@ services:
       - DB_USERNAME=morpheus
       - DB_PASSWORD=findneo
       - DB_NAME=sre-lab
-      - OTEL_EXPORTER=otlp
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:8200
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=finance-api,service.version=1.0
+      - ELASTIC_APM_SERVICE_NAME=srelab-api
+      - ELASTIC_APM_SERVER_URLS=http://apm-server:8200
+      - ELASTIC_APM_SECRET_TOKEN=
+      - ELASTIC_APM_APPLICATION_PACKAGES=org.srelab
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -126,4 +125,12 @@ services:
       interval: 5s
       retries: 10
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
+
+  load-generator:
+    image: williamyeh/hey
+    networks:
+    - sre-lab
+    command: -z 5m -c 2 http://api:8080/orders
+
+
       

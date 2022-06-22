@@ -6,8 +6,8 @@ RUN gradle build -x test --no-daemon
 
 FROM openjdk:11-jre
 
-COPY --from=BUILD /src/build/libs/sre-lab-1.0-SNAPSHOT.jar /bin/runner/main.jar
+COPY --from=BUILD /src/build/libs/sre-lab.jar /bin/runner/main.jar
 WORKDIR /bin/runner
-RUN wget -O opentelemetry-javaagent-all.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.14.0/opentelemetry-javaagent.jar
+RUN wget -O apm.jar https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.31.0/elastic-apm-agent-1.31.0.jar
 
-CMD ["java", "-javaagent:opentelemetry-javaagent-all.jar", "-jar", "main.jar"]
+CMD ["java", "-javaagent:apm.jar", "-jar", "main.jar", "server"]

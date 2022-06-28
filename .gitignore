@@ -2,3 +2,4 @@
 */.idea
 */gradle
 api/build/*
+api/out/*

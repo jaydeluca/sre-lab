@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
-class TelemetryTestResource @Inject constructor(
+class OrdersResource @Inject constructor(
     metricRegistry: MetricRegistry
 ) {
 

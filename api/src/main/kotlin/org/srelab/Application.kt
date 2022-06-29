@@ -12,6 +12,7 @@ import io.dropwizard.jdbi3.JdbiFactory
 import io.dropwizard.migrations.MigrationsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
+import org.srelab.dao.OrderDao
 
 
 class Application : Application<ApplicationConfig>() {
@@ -44,6 +45,8 @@ class Application : Application<ApplicationConfig>() {
 
         val injector = Guice.createInjector(modules)
         injector.injectMembers(this)
+
+        private val orderDao = OrderDao()
 
 
         environment.jersey().register(injector.getInstance<OrdersResource>())

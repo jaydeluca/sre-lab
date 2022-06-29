@@ -15,5 +15,6 @@ Prerequisites:
 TODO:
 - [ ] ship app logs to elasticsearch
 - [x] create load generator (maybe rewrite as gatling for more complex scenarios)
+- [ ] create endpoint that interacts with database
 - [ ] interface for scenarios
 - [ ] ability to reset

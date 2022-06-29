@@ -3,17 +3,18 @@ package org.srelab.resources
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.annotation.Timed;
 import com.google.inject.Inject
+import org.srelab.core.Order
+import org.srelab.dao.OrderDao
+import javax.ws.rs.*
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
 class OrdersResource @Inject constructor(
-    metricRegistry: MetricRegistry
+    metricRegistry: MetricRegistry,
+    orderDao: OrderDao
 ) {
 
     private var counter = metricRegistry.counter("order_retrievals")
@@ -23,5 +24,11 @@ class OrdersResource @Inject constructor(
     fun testCounter(@QueryParam("id") id: Long?): Long {
         counter.inc(1)
         return counter.count
+    }
+
+    @POST
+    @Timed
+    fun createOrder(order: Order) {
+
     }
 }

@@ -1,16 +1,27 @@
 package org.srelab.dao
 
-import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
-import java.util.*
+import io.dropwizard.hibernate.AbstractDAO
+import org.hibernate.SessionFactory
+import org.slf4j.LoggerFactory
+import org.srelab.core.Order
 
 
-interface OrderDao {
-    @SqlUpdate("INSERT INTO \"orders\" (\"customer\", \"purchase_date\") VALUES (:customer, :purchaseDate)")
-    fun insert(customer: String?, purchaseDate: Date)
+class OrderDao(sessionFactory: SessionFactory?) : AbstractDAO<Order>(sessionFactory) {
 
+    companion object {
+        private val logger = LoggerFactory.getLogger(OrderDao::class.java)
+    }
 
-    @SqlQuery("select order from orders where id = :id")
-    fun findOrderById(@Bind("id") id: Int): String
+    fun findById(id: Int): Order? {
+        return get(id)
+    }
+
+    fun new(order: Order): Order {
+        return persist(order)
+    }
+
+    fun findAll(): List<Order> {
+        return list(namedTypedQuery("org.srelab.core.Order.findAll"))
+    }
+
 }

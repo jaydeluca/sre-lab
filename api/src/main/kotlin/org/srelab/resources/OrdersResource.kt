@@ -2,19 +2,18 @@ package org.srelab.resources
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.annotation.Timed;
-import com.google.inject.Inject
+import io.dropwizard.hibernate.UnitOfWork
 import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import javax.ws.rs.*
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
-class OrdersResource @Inject constructor(
+class OrdersResource constructor(
     metricRegistry: MetricRegistry,
-    orderDao: OrderDao
+    private val orderDao: OrderDao
 ) {
 
     private var counter = metricRegistry.counter("order_retrievals")
@@ -27,8 +26,9 @@ class OrdersResource @Inject constructor(
     }
 
     @POST
+    @UnitOfWork
     @Timed
-    fun createOrder(order: Order) {
-
+    fun createOrder(order: Order): Order {
+        return orderDao.new(order)
     }
 }

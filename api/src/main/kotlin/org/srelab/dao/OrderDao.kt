@@ -2,15 +2,10 @@ package org.srelab.dao
 
 import io.dropwizard.hibernate.AbstractDAO
 import org.hibernate.SessionFactory
-import org.slf4j.LoggerFactory
 import org.srelab.core.Order
 
 
-class OrderDao(sessionFactory: SessionFactory?) : AbstractDAO<Order>(sessionFactory) {
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(OrderDao::class.java)
-    }
+class OrderDao(private val sessionFactory: SessionFactory) : AbstractDAO<Order>(sessionFactory) {
 
     fun findById(id: Int): Order? {
         return get(id)
@@ -20,8 +15,19 @@ class OrderDao(sessionFactory: SessionFactory?) : AbstractDAO<Order>(sessionFact
         return persist(order)
     }
 
+    fun update(order: Order) {
+        val session = sessionFactory.openSession()
+        session.beginTransaction()
+        session.update(order)
+        session.transaction.commit()
+    }
+
     fun findAll(): List<Order> {
-        return list(namedTypedQuery("org.srelab.core.Order.findAll"))
+        val session = sessionFactory.openSession()
+        session.beginTransaction()
+        val query = session.createQuery("SELECT o from Order o", Order::class.java)
+        session.transaction.commit()
+        return query.list()
     }
 
 }

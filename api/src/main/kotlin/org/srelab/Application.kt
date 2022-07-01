@@ -6,6 +6,7 @@ import com.google.inject.Guice
 import io.dropwizard.Application
 import io.dropwizard.db.PooledDataSourceFactory
 import io.dropwizard.hibernate.HibernateBundle
+import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper
 import io.dropwizard.migrations.MigrationsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
@@ -61,6 +62,7 @@ class Application : Application<ApplicationConfig>() {
         val orderDao = OrderDao(hibernate.sessionFactory)
         val metricRegistry = injector.getInstance<MetricRegistry>()
         environment.jersey().register(OrdersResource(metricRegistry, orderDao))
+        environment.jersey().register(JsonProcessingExceptionMapper(true));
         environment.healthChecks().register("HealthCheck", HealthCheckResource())
     }
 }

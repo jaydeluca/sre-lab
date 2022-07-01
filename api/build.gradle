@@ -1,5 +1,11 @@
+buildscript {
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-noarg:1.7.0"
+    }
+}
+
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.0'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
@@ -7,6 +13,7 @@ group 'dropwizard'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'application'
+apply plugin: 'kotlin-jpa'
 
 repositories {
     mavenCentral()

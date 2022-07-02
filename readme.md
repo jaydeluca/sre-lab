@@ -13,8 +13,15 @@ Prerequisites:
 
 
 TODO:
+- [x] create endpoints that interact with database
+  - [x] create new order
+  - [x] get all orders
+  - [x] get single order
+  - [x] update order
+- [x] create load generator that exercises all endpoints
+- [ ] create endpoint that interacts with an unreliable external dependency 
+  - [ ] include load test
+- [ ] setup mechanism for triggering load tests
 - [ ] ship app logs to elasticsearch
-- [x] create load generator (maybe rewrite as gatling for more complex scenarios)
-- [ ] create endpoint that interacts with database
 - [ ] interface for scenarios
 - [ ] ability to reset

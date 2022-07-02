@@ -3,3 +3,4 @@
 */gradle
 api/build/*
 api/out/*
+api/elastic-apm-agent-*

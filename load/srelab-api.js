@@ -8,8 +8,8 @@ function getRandomInt(max) {
 export let options = {
     vus: 5,
     stages: [
-        { duration: "3m", target: 10 },
-        { duration: "5m", target: 35 },
+        { duration: "30s", target: 10 },
+        { duration: "1m", target: 35 },
         { duration: "1m30s", target: 0 },
     ]
 };

@@ -34,7 +34,6 @@ class Application : Application<ApplicationConfig>() {
 
         val objectMapper = bootstrap.objectMapper
         objectMapper.dateFormat = SimpleDateFormat("yyyy-MM-dd")
-
     }
 
     private val migrations = object : MigrationsBundle<ApplicationConfig>() {

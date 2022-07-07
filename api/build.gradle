@@ -26,35 +26,28 @@ dependencies {
     implementation 'io.dropwizard:dropwizard-migrations:2.1.0'
     implementation 'com.authzee.kotlinguice4:kotlin-guice:1.3.0'
     implementation 'io.dropwizard.metrics:metrics-core:4.2.9'
-    implementation("org.postgresql:postgresql:42.4.0")
-
+    implementation 'org.postgresql:postgresql:42.4.0'
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "17"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "17"
 }
 
 
 // ## for Application.run
 mainClassName = 'org.srelab.Application'
 run {
-    args = ['server', 'config.yml']
+    args = ['server', 'dev.yml']
 }
 
-shadowJar {
-    mergeServiceFiles()
-    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': rootProject.name
-        attributes 'Implementation-Version': rootProject.version
-        attributes 'Implementation-Vendor-Id': rootProject.group
-        attributes 'Built-By': InetAddress.localHost.hostName
-        attributes 'Created-By': 'Gradle ' + gradle.gradleVersion
-        attributes 'Main-Class': 'KHelloWorldKt'
+        attributes 'Main-Class': "${mainClassName}"
     }
-    archiveName 'sre-lab.jar'
+    archiveBaseName = "${rootProject.name}"
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
-

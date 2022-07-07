@@ -25,3 +25,14 @@ TODO:
 - [ ] ship app logs to elasticsearch
 - [ ] interface for scenarios
 - [ ] ability to reset
+- [ ] Add support for multiple APMs
+  - [x] Elastic
+  - [ ] Datadog
+  - [ ] New Relic
+- [ ] Message bus for triggering changes in state
+
+
+Low Priority:
+- [ ] Create K8s configs and deployments
+- [ ] linting
+- [ ] CI/CD for linting and testing builds

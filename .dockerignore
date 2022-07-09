@@ -1,0 +1,4 @@
+api/build/*
+api/.gradle/*
+api/gradle/*
+api/out/*

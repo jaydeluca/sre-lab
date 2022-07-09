@@ -1,4 +1,4 @@
 # Dropwizard Telemetry Lab
 
 
-Java 11
+Java 17

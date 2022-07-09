@@ -5,6 +5,8 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
+const BASE_URL = "http://127.0.0.1:8080"
+
 export let options = {
     vus: 5,
     stages: [
@@ -21,13 +23,13 @@ export default function() {
     }
 
     // Create new order
-    let res = http.post("http://localhost:8080/orders", JSON.stringify(newOrder), {
+    let res = http.post(`${BASE_URL}/orders`, JSON.stringify(newOrder), {
         headers: { 'Content-Type': 'application/json' },
     });
     let id = res.json().id
 
     // Fetch the newly created order
-    http.get(`http://localhost:8080/orders?id=${id}`);
+    http.get(`${BASE_URL}/orders?id=${id}`);
 
     let updatedOrder = {
         "id": id,
@@ -36,7 +38,7 @@ export default function() {
     }
 
     // Update the newly created order
-    let updateResponse = http.put(`http://localhost:8080/orders/${id}`, JSON.stringify(updatedOrder), {
+    let updateResponse = http.put(`${BASE_URL}/orders/${id}`, JSON.stringify(updatedOrder), {
         headers: { 'Content-Type': 'application/json' },
     });
 
@@ -45,14 +47,14 @@ export default function() {
     });
 
     // Fetch all Orders
-    let allResponse = http.get("http://localhost:8080/orders");
+    let allResponse = http.get(`${BASE_URL}/orders`);
 
     // Pick random other order
     let numOrders = Object.keys(allResponse.json()).length
     let randomId = getRandomInt(numOrders - 1)
 
     // Update the random  order
-    let update2Response = http.put(`http://localhost:8080/orders/${randomId}`, JSON.stringify(updatedOrder), {
+    let update2Response = http.put(`${BASE_URL}/orders/${randomId}`, JSON.stringify(updatedOrder), {
         headers: { 'Content-Type': 'application/json' },
     });
 

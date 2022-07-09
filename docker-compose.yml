@@ -99,8 +99,7 @@ services:
         interval: 5s
         timeout: 5s
         retries: 5
-
-
+  
   api:
     build:
       context: ./
@@ -127,10 +126,14 @@ services:
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
 
   load-generator:
-    image: williamyeh/hey
+    image: grafana/k6:0.39.0
+    depends_on:
+      - "api"
     networks:
-    - sre-lab
-    command: -z 5m -c 2 http://api:8080/orders
+      - sre-lab
+    volumes:
+      - ./load/:/scripts
+    command: k6 /scripts/srelab-api.js
 
 
       

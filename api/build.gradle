@@ -6,7 +6,8 @@ buildscript {
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.0'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'java'
 }
 
 group 'dropwizard'
@@ -42,6 +43,18 @@ mainClassName = 'org.srelab.Application'
 run {
     args = ['server', 'dev.yml']
 }
+
+//// Configure the shadow jar task
+//shadowJar {
+//    mergeServiceFiles()
+//    exclude 'META-INF/*.DSA'
+//    exclude 'META-INF/*.RSA'
+//}
+//jar {
+//    manifest {
+//        attributes 'Main-Class': mainClassName
+//    }
+//}
 
 task fatJar(type: Jar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

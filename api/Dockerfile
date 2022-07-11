@@ -5,12 +5,12 @@ WORKDIR /app
 
 RUN wget -O apm.jar https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.31.0/elastic-apm-agent-1.31.0.jar
 
-RUN gradle fatJar -x test --no-daemon
+RUN gradle build -x test --no-daemon
 
 FROM openjdk:17-oracle
 
 COPY --from=BUILD /app/apm.jar /bin/runner/apm.jar
-COPY --from=BUILD /app/build/libs/sre-lab-1.0-SNAPSHOT.jar /bin/runner/main.jar
+COPY --from=BUILD /app/build/libs/sre-lab-1.0-SNAPSHOT-all.jar /bin/runner/main.jar
 WORKDIR /bin/runner
 
 CMD ["java", "-javaagent:apm.jar", "-jar", "main.jar", "server"]

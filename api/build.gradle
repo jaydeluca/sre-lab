@@ -37,31 +37,10 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "17"
 }
 
-
-// ## for Application.run
-mainClassName = 'org.srelab.Application'
 run {
     args = ['server', 'dev.yml']
 }
 
-//// Configure the shadow jar task
-//shadowJar {
-//    mergeServiceFiles()
-//    exclude 'META-INF/*.DSA'
-//    exclude 'META-INF/*.RSA'
-//}
-//jar {
-//    manifest {
-//        attributes 'Main-Class': mainClassName
-//    }
-//}
-
-task fatJar(type: Jar) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes 'Main-Class': "${mainClassName}"
-    }
-    archiveBaseName = "${rootProject.name}"
-    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+shadowJar {
+    mergeServiceFiles()
 }

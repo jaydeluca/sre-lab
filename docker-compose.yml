@@ -79,7 +79,8 @@ services:
     image: docker.elastic.co/beats/metricbeat:8.3.2
     environment:
       setup.kibana.host:kibana: 5601
-      output.elasticsearch.hosts: "['elasticsearch:9200']"
+    networks:
+      - sre-lab
     ports:
       - 8125:8125
     volumes:

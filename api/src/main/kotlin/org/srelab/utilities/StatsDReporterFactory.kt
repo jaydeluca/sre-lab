@@ -33,7 +33,6 @@ class StatsDReporterFactory: BaseFormattedReporterFactory() {
     @NotNull
     private val prefix = ""
 
-
     override fun build(registry: MetricRegistry): ScheduledReporter {
         val statsd = StatsD(host, port)
         val reporter = StatsDReporter
@@ -46,5 +45,4 @@ class StatsDReporterFactory: BaseFormattedReporterFactory() {
         logger.info("Registering StatsDReporter $reporter")
         return reporter
     }
-
 }

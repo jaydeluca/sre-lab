@@ -10,6 +10,7 @@ output.elasticsearch:
   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
   username: '${ELASTICSEARCH_USERNAME:}'
   password: '${ELASTICSEARCH_PASSWORD:}'
+  allow_older_versions: 'true'
 
 logging.to_stderr: true
 logging.level: info

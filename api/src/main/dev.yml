@@ -17,6 +17,7 @@ database:
     hibernate.jdbc.batch_sze: 100
     hibernate.order_inserts: true
     hibernate.order_updates: true
+    hibernate.generate_statistics: false
 
 logging:
   appenders:
@@ -30,3 +31,9 @@ server:
       - type: console
         layout:
           type: access-json
+
+metrics:
+  reporters:
+    - type: statsd
+      host: localhost
+      port: 8125

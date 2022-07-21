@@ -9,7 +9,8 @@ Prerequisites:
   - 9200 (elasticsearch)
   - 5601 (kibana)
   - 8200 (apm server)
-
+  - 8125 (StatsD via metricbeat)
+  - 12201 (logstash)
 
 
 TODO:
@@ -22,7 +23,8 @@ TODO:
 - [ ] create endpoint that interacts with an unreliable external dependency 
   - [ ] include load test
 - [ ] setup mechanism for triggering load tests
-- [ ] ship app logs to elasticsearch
+- [x] ship app logs to elasticsearch
+- [ ] Look into Grafana vs Elastic for charting metrics
 - [ ] interface for scenarios
 - [ ] ability to reset
 - [ ] Add support for multiple APMs
@@ -36,3 +38,4 @@ Low Priority:
 - [ ] Create K8s configs and deployments
 - [ ] linting
 - [ ] CI/CD for linting and testing builds
+- [ ] Improve indexing/readability of app logs in kibana

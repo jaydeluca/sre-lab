@@ -1,5 +1,5 @@
 */.gradle
-*/.idea
+*.idea
 */gradle
 api/build/*
 api/out/*

@@ -1,1 +1,1 @@
-app.StatsdReporterFactory
+org.srelab.utilities.StatsDReporterFactory

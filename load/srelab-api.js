@@ -5,7 +5,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-const BASE_URL = "http://127.0.0.1:8080"
+const BASE_URL = __ENV.HOSTNAME
 
 export let options = {
     vus: 5,

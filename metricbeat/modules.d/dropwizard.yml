@@ -1,0 +1,7 @@
+- module: dropwizard
+  metricsets: ["collector"]
+  period: 10s
+  hosts: ["api:8081"]
+  metrics_path: /metrics/metrics
+  namespace: api
+  enabled: true

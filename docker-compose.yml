@@ -1,12 +1,4 @@
-version: '3'
-
-networks:
-  sre-lab:
-    driver: bridge
-
-volumes:
-  sre-lab:
-    driver: local
+version: '3.5'
 
 services:
   apm-server:
@@ -82,6 +74,19 @@ services:
       retries: 20
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
 
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:8.3.2
+    environment:
+      setup.kibana.host:kibana: 5601
+    networks:
+      - sre-lab
+    ports:
+      - 8125:8125
+    volumes:
+      - ./metricbeat/modules.d:/usr/share/metricbeat/modules.d
+      - ./metricbeat/metricbeat.yml/:/usr/share/metricbeat/metricbeat.yml
+
   postgresql:
     image: postgres
     container_name: postgres
@@ -113,9 +118,8 @@ services:
       - POSTGRES_URL=jdbc:postgresql://postgres:5432/sre-lab?user=morpheus&password=findneo
       - CHANGELOG_FILE=migrations.xml
 
-
-  
   api:
+    hostname: api
     build:
       context: ./
       dockerfile: ./api/Dockerfile
@@ -135,6 +139,11 @@ services:
       - "liquibase"
     networks:
       - sre-lab
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201" # Logstash UDP input port
+        tag: "api_logs"
     healthcheck:
       interval: 5s
       retries: 10
@@ -148,7 +157,24 @@ services:
       - sre-lab
     volumes:
       - ./load/:/scripts
-    command: k6 /scripts/srelab-api.js
+    command: run -e HOSTNAME=http://api:8080 /scripts/srelab-api.js
 
+  logstash:
+    image: logstash:7.11.1
+    volumes:
+      - ./logstash:/etc/logstash
+    networks:
+      - sre-lab
+    command: logstash -f /etc/logstash/logstash.conf
+    depends_on:
+      - elasticsearch
+    ports:
+      - 12201:12201/udp
 
-      
+networks:
+  sre-lab:
+    driver: bridge
+
+volumes:
+  sre-lab:
+    driver: local

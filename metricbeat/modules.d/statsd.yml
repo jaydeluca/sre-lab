@@ -1,0 +1,4 @@
+- module: statsd
+  host: "localhost"
+  port: "8125"
+  enabled: true

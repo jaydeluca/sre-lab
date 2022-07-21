@@ -17,3 +17,10 @@ database:
     hibernate.jdbc.batch_sze: 100
     hibernate.order_inserts: true
     hibernate.order_updates: true
+
+metrics:
+  reporters:
+    - type: statsd
+      host: localhost
+      port: 8125
+      prefix: api

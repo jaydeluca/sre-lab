@@ -74,6 +74,18 @@ services:
       retries: 20
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
 
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:8.3.2
+    environment:
+      setup.kibana.host:kibana: 5601
+      output.elasticsearch.hosts: "['elasticsearch:9200']"
+    ports:
+      - 8125:8125
+    volumes:
+      - ./metricbeat/modules.d:/usr/share/metricbeat/modules.d
+      - ./metricbeat/metricbeat.yml/:/usr/share/metricbeat/metricbeat.yml
+
   postgresql:
     image: postgres
     container_name: postgres
@@ -157,8 +169,6 @@ services:
       - elasticsearch
     ports:
       - 12201:12201/udp
-
-
 
 networks:
   sre-lab:

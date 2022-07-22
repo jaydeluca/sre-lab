@@ -1,6 +1,10 @@
 # SRE Lab
 
-Prerequisites: 
+## Setup
+
+### Prerequisites 
+Current setup supports docker only at the moment
+
 - You will need docker installed
 - The following ports need to be available:
   - 5432 (postgres)
@@ -13,17 +17,20 @@ Prerequisites:
   - 12201 (logstash)
 
 
-TODO:
-- [x] create endpoints that interact with database
-  - [x] create new order
-  - [x] get all orders
-  - [x] get single order
-  - [x] update order
-- [x] create load generator that exercises all endpoints
+### About
+This lab contains the following components:
+- Kotlin Dropwizard API
+- Postgres DB
+- K6 load generation
+- Elasticsearch observability tools
+    - Kibana for logs
+    - APM
+    - Metrics
+
+## TODO
 - [ ] create endpoint that interacts with an unreliable external dependency 
   - [ ] include load test
 - [ ] setup mechanism for triggering load tests
-- [x] ship app logs to elasticsearch
 - [ ] Look into Grafana vs Elastic for charting metrics
 - [ ] interface for scenarios
 - [ ] ability to reset
@@ -36,6 +43,5 @@ TODO:
 
 Low Priority:
 - [ ] Create K8s configs and deployments
-- [ ] linting
-- [ ] CI/CD for linting and testing builds
 - [ ] Improve indexing/readability of app logs in kibana
+

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.dropwizard.Configuration
 import io.dropwizard.db.DataSourceFactory
 
-
 class ApplicationConfig : Configuration() {
-    var template : String? = null
-    var defaultName : String = "SRE-lab"
+    var template: String? = null
+    var defaultName: String = "SRE-lab"
 
     private var database: DataSourceFactory = DataSourceFactory()
 

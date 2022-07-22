@@ -4,7 +4,6 @@ import io.dropwizard.hibernate.AbstractDAO
 import org.hibernate.SessionFactory
 import org.srelab.core.Order
 
-
 class OrderDao(private val sessionFactory: SessionFactory) : AbstractDAO<Order>(sessionFactory) {
 
     fun findById(id: Int): Order? {
@@ -29,5 +28,4 @@ class OrderDao(private val sessionFactory: SessionFactory) : AbstractDAO<Order>(
         session.transaction.commit()
         return query.list()
     }
-
 }

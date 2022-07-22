@@ -15,7 +15,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 @JsonTypeName("statsd")
-class StatsDReporterFactory: BaseFormattedReporterFactory() {
+class StatsDReporterFactory : BaseFormattedReporterFactory() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(StatsDReporterFactory::class.java)
@@ -41,7 +41,7 @@ class StatsDReporterFactory: BaseFormattedReporterFactory() {
             .withTags()
             .convertRatesTo(TimeUnit.SECONDS)
             .convertDurationsTo(TimeUnit.MILLISECONDS).filter(MetricFilter.ALL)
-            .build(statsd);
+            .build(statsd)
         logger.info("Registering StatsDReporter $reporter")
         return reporter
     }

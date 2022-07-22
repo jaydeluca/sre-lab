@@ -17,7 +17,6 @@ import org.srelab.resources.HealthCheckResource
 import org.srelab.resources.OrdersResource
 import java.text.SimpleDateFormat
 
-
 class Application : Application<ApplicationConfig>() {
 
     companion object {
@@ -50,8 +49,10 @@ class Application : Application<ApplicationConfig>() {
         }
     }
 
-    override fun run(configuration: ApplicationConfig,
-                     environment: Environment) {
+    override fun run(
+        configuration: ApplicationConfig,
+        environment: Environment
+    ) {
         val modules = listOf(
             ApplicationModule(environment)
         )
@@ -61,7 +62,7 @@ class Application : Application<ApplicationConfig>() {
         val orderDao = OrderDao(hibernate.sessionFactory)
         val metricRegistry = injector.getInstance<MetricRegistry>()
         environment.jersey().register(OrdersResource(metricRegistry, orderDao))
-        environment.jersey().register(JsonProcessingExceptionMapper(true));
+        environment.jersey().register(JsonProcessingExceptionMapper(true))
         environment.healthChecks().register("HealthCheck", HealthCheckResource())
     }
 }

@@ -15,6 +15,7 @@ Current setup supports docker only at the moment
   - 8200 (apm server)
   - 8125 (StatsD via metricbeat)
   - 12201 (logstash)
+  - 9996 (users api)
 
 
 ### About

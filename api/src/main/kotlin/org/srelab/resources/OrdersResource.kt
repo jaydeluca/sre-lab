@@ -2,6 +2,7 @@ package org.srelab.resources
 
 import com.codahale.metrics.MetricRegistry
 import io.dropwizard.hibernate.UnitOfWork
+import org.srelab.clients.UsersClient
 import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import javax.ws.rs.GET
@@ -22,6 +23,7 @@ class OrdersResource constructor(
 
     private var singleOrderCounter = metricRegistry.counter("order_retrievals_single")
     private var allOrdersCounter = metricRegistry.counter("order_retrievals_all")
+    private var client = UsersClient.Builder().baseUrl("http://localhost:9996").build()
 
     @GET
     @UnitOfWork
@@ -30,6 +32,7 @@ class OrdersResource constructor(
             singleOrderCounter.inc()
             return listOf(orderDao.findById(it))
         }
+        client.get("/")
         allOrdersCounter.inc()
         return orderDao.findAll()
     }

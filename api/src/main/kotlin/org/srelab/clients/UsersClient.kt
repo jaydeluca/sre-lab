@@ -8,7 +8,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.TimeUnit
 
-class UsersClient private constructor(builder: UsersClient.Builder) : ClientInterface  {
+class UsersClient private constructor(builder: UsersClient.Builder) : ClientInterface {
 
     private val baseUrl: String?
 
@@ -19,6 +19,7 @@ class UsersClient private constructor(builder: UsersClient.Builder) : ClientInte
     class Builder {
         var baseUrl: String? = null
             private set
+
         fun baseUrl(baseUrl: String) = apply { this.baseUrl = baseUrl }
         fun build() = UsersClient(this)
     }
@@ -57,6 +58,4 @@ class UsersClient private constructor(builder: UsersClient.Builder) : ClientInte
             throw RuntimeException()
         }
     }
-
-
 }

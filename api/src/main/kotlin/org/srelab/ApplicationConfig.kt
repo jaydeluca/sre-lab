@@ -7,6 +7,7 @@ import io.dropwizard.db.DataSourceFactory
 class ApplicationConfig : Configuration() {
     var template: String? = null
     var defaultName: String = "SRE-lab"
+    var usersClient: String = ""
 
     private var database: DataSourceFactory = DataSourceFactory()
 

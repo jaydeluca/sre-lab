@@ -23,3 +23,5 @@ metrics:
     - type: statsd
       host: localhost
       port: 8125
+
+usersClient: http://localhost:9996

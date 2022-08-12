@@ -1,8 +1,8 @@
 package org.srelab
 
-import com.authzee.kotlinguice4.getInstance
 import com.codahale.metrics.MetricRegistry
 import com.google.inject.Guice
+import dev.misfitlabs.kotlinguice4.getInstance
 import io.dropwizard.Application
 import io.dropwizard.db.PooledDataSourceFactory
 import io.dropwizard.hibernate.HibernateBundle
@@ -10,9 +10,11 @@ import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper
 import io.dropwizard.migrations.MigrationsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
+import org.srelab.clients.UsersClient
 import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import org.srelab.guice.ApplicationModule
+import org.srelab.guice.ClientsModule
 import org.srelab.resources.HealthCheckResource
 import org.srelab.resources.OrdersResource
 import java.text.SimpleDateFormat
@@ -54,14 +56,17 @@ class Application : Application<ApplicationConfig>() {
         environment: Environment
     ) {
         val modules = listOf(
-            ApplicationModule(environment)
+            ApplicationModule(environment, configuration),
+            ClientsModule()
         )
 
         val injector = Guice.createInjector(modules)
         injector.injectMembers(this)
         val orderDao = OrderDao(hibernate.sessionFactory)
         val metricRegistry = injector.getInstance<MetricRegistry>()
-        environment.jersey().register(OrdersResource(metricRegistry, orderDao))
+        val usersClient = injector.getInstance<UsersClient>()
+
+        environment.jersey().register(OrdersResource(metricRegistry, usersClient, orderDao))
         environment.jersey().register(JsonProcessingExceptionMapper(true))
         environment.healthChecks().register("HealthCheck", HealthCheckResource())
     }

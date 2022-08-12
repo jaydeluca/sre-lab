@@ -149,6 +149,22 @@ services:
       retries: 10
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
 
+
+  users-api:
+    hostname: users-api
+    build:
+      context: ./
+      dockerfile: ./users-api/Dockerfile
+    networks:
+      - sre-lab
+    ports:
+      - "9996:9996"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201" # Logstash UDP input port
+        tag: "users_api_logs"
+
   load-generator:
     image: grafana/k6:0.39.0
     depends_on:

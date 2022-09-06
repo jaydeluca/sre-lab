@@ -37,3 +37,5 @@ metrics:
     - type: statsd
       host: localhost
       port: 8125
+
+usersClient: http://proxy:10000/users-api

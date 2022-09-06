@@ -149,6 +149,22 @@ services:
       retries: 10
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
 
+
+  users-api:
+    hostname: users-api
+    build:
+      context: ./
+      dockerfile: ./users-api/Dockerfile
+    networks:
+      - sre-lab
+    ports:
+      - "9996:9996"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://localhost:12201" # Logstash UDP input port
+        tag: "users_api_logs"
+
   load-generator:
     image: grafana/k6:0.39.0
     depends_on:
@@ -157,7 +173,7 @@ services:
       - sre-lab
     volumes:
       - ./load/:/scripts
-    command: run -e HOSTNAME=http://api:8080 /scripts/srelab-api.js
+    command: run -e HOSTNAME=http://proxy:10000/orders-api /scripts/srelab-api.js
 
   logstash:
     image: logstash:7.11.1
@@ -170,6 +186,16 @@ services:
       - elasticsearch
     ports:
       - 12201:12201/udp
+
+  envoy:
+    hostname: proxy
+    image:  envoyproxy/envoy-dev
+    networks:
+      - sre-lab
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
 
 networks:
   sre-lab:

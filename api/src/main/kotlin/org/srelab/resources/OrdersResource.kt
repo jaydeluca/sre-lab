@@ -18,12 +18,12 @@ import javax.ws.rs.core.MediaType
 @Produces(MediaType.APPLICATION_JSON)
 class OrdersResource constructor(
     metricRegistry: MetricRegistry,
+    private val client: UsersClient,
     private val orderDao: OrderDao
 ) {
 
     private var singleOrderCounter = metricRegistry.counter("order_retrievals_single")
     private var allOrdersCounter = metricRegistry.counter("order_retrievals_all")
-    private var client = UsersClient.Builder().baseUrl("http://localhost:9996").build()
 
     @GET
     @UnitOfWork

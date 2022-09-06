@@ -5,7 +5,10 @@
 ### Prerequisites 
 Current setup supports docker only at the moment
 
-- You will need docker installed
+```
+docker compose up -d
+```
+
 - The following ports need to be available:
   - 5432 (postgres)
   - 8080 (dropwizard api)
@@ -17,10 +20,12 @@ Current setup supports docker only at the moment
   - 12201 (logstash)
   - 9996 (users api)
 
+@TODO Minikube / K8 option
 
 ### About
 This lab contains the following components:
-- Kotlin Dropwizard API
+- Kotlin Dropwizard API (api)
+- Golang API (users-api)
 - Postgres DB
 - K6 load generation
 - Elasticsearch observability tools
@@ -28,21 +33,25 @@ This lab contains the following components:
     - APM
     - Metrics
 
+### Current Topology
+
+![Topology](./docs/media/2022-09-06-docker-topology.png)
+
+
 ## TODO
-- [ ] create endpoint that interacts with an unreliable external dependency 
-  - [ ] include load test
-- [ ] setup mechanism for triggering load tests
+- [ ] Create K8s configs and deployments for minikube
+- [ ] Control plane (istio)
 - [ ] Look into Grafana vs Elastic for charting metrics
+- [ ] Message bus for triggering changes in state
+- [ ] Mechanism for triggering load tests
 - [ ] interface for scenarios
 - [ ] ability to reset
 - [ ] Add support for multiple APMs
   - [x] Elastic
   - [ ] Datadog
   - [ ] New Relic
-- [ ] Message bus for triggering changes in state
 
 
 Low Priority:
-- [ ] Create K8s configs and deployments
 - [ ] Improve indexing/readability of app logs in kibana
 

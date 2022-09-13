@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -29,8 +30,15 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	}
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
 
 func main() {
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		enableCors(&w)
 
@@ -47,5 +55,13 @@ func main() {
 		respondWithJSON(w, http.StatusOK, user)
 
 	})
-	log.Fatal(http.ListenAndServe(":9996", nil))
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		enableCors(&w)
+		respondWithJSON(w, http.StatusOK, "Success")
+	})
+
+	port := getEnv("PORT", "9996")
+	portString := fmt.Sprintf(":%v", port)
+	fmt.Printf("Starting server on port %v", port)
+	log.Fatal(http.ListenAndServe(portString, nil))
 }

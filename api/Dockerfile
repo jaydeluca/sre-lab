@@ -1,4 +1,5 @@
-FROM gradle:7.4-jdk17 as BUILD
+FROM gradle:jdk17 as BUILD
+
 
 COPY ./api/. /app
 WORKDIR /app
@@ -7,7 +8,7 @@ RUN wget -O apm.jar https://search.maven.org/remotecontent?filepath=co/elastic/a
 
 RUN gradle shadowJar -x test --no-daemon
 
-FROM openjdk:17-oracle
+FROM amazoncorretto:17
 
 COPY --from=BUILD /app/apm.jar /bin/runner/apm.jar
 COPY --from=BUILD /app/build/libs/sre-lab-1.0-SNAPSHOT-all.jar /bin/runner/main.jar

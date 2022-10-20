@@ -4,6 +4,5 @@ Start a cluster
 
 Run from project root:
 ```
-eval $(minikube docker-env)
-./minikube-bootstrap.sh
+./k8s-bootstrap.sh
 ```

@@ -1,12 +1,11 @@
-FROM gradle:jdk17 as BUILD
-
+FROM gradle:7.5-jdk17 as BUILD
 
 COPY ./api/. /app
 WORKDIR /app
 
-RUN wget -O apm.jar https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.31.0/elastic-apm-agent-1.31.0.jar
-
 RUN gradle shadowJar -x test --no-daemon
+
+RUN wget -O apm.jar https://search.maven.org/remotecontent?filepath=co/elastic/apm/elastic-apm-agent/1.31.0/elastic-apm-agent-1.31.0.jar
 
 FROM amazoncorretto:17
 

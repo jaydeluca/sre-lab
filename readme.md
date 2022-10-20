@@ -20,7 +20,12 @@ docker compose up -d
   - 12201 (logstash)
   - 9996 (users api)
 
-@TODO Minikube / K8 option
+###  K8s
+```
+./build-containers.sh
+./k8s-bootstrap.sh
+```
+
 
 ### About
 This lab contains the following components:

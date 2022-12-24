@@ -128,10 +128,12 @@ services:
       - DB_USERNAME=morpheus
       - DB_PASSWORD=findneo
       - DB_NAME=sre-lab
+      - CUSTOM_JAVA_AGENT=apm.jar
       - ELASTIC_APM_SERVICE_NAME=srelab-api
       - ELASTIC_APM_SERVER_URLS=http://apm-server:8200
       - ELASTIC_APM_SECRET_TOKEN=
       - ELASTIC_APM_APPLICATION_PACKAGES=org.srelab
+      - CONFIG_ENVIRONMENT=dev
     ports:
       - "8080:8080"
       - "8081:8081"

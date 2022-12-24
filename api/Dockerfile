@@ -11,7 +11,10 @@ FROM amazoncorretto:17
 
 COPY --from=BUILD /app/apm.jar /bin/runner/apm.jar
 COPY --from=BUILD /app/build/libs/sre-lab-1.0-SNAPSHOT-all.jar /bin/runner/main.jar
-COPY --from=BUILD /app/src/main/dev.yml /bin/runner/config.yml
+COPY --from=BUILD /app/src/main/dev.yml /bin/runner/dev.yml
+COPY --from=BUILD /app/src/main/k8s.yml /bin/runner/k8s.yml
+COPY --from=BUILD /app/start.sh /bin/runner/start.sh
+
 WORKDIR /bin/runner
 
-CMD ["java", "-javaagent:apm.jar", "-jar", "main.jar", "server", "config.yml"]
+CMD ["./start.sh"]

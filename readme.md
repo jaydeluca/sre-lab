@@ -2,8 +2,7 @@
 
 ## Setup
 
-### Prerequisites 
-Current setup supports docker only at the moment
+### Docker compose
 
 ```
 docker compose up -d
@@ -21,6 +20,10 @@ docker compose up -d
   - 9996 (users api)
 
 ###  K8s
+Requirements:  
+Kubernetes version >= 1.21  
+Helm version >= 3.8
+
 ```
 ./build-containers.sh
 ./k8s-bootstrap.sh
@@ -53,6 +56,7 @@ This lab contains the following components:
 - [ ] ability to reset
 - [ ] Add support for multiple APMs
   - [x] Elastic
+  - [ ] SigNoz
   - [ ] Datadog
   - [ ] New Relic
 

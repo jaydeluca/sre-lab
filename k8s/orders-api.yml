@@ -42,6 +42,12 @@ spec:
               value: k8s
             - name: DB_HOST
               value: postgresql
+            - name: CUSTOM_JAVA_AGENT
+              value: opentelemetry-javaagent.jar
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://signoz-otel-collector.platform.svc.cluster.local:4317"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: service.name=orders-api
           ports:
             - containerPort: 8080
           livenessProbe:

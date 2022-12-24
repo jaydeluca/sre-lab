@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 if [[ -z "${CUSTOM_JAVA_AGENT}" ]]; then
   AGENT=""
 else

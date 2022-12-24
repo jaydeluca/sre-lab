@@ -28,7 +28,11 @@ k apply -f k8s/users-api.yml
 
 k apply -f k8s/orders-api.yml
 
-k exec -it [pod-name] --  psql -h localhost -U morpheus --password findneo -p 5432 postgresdb
+k exec -it $(k get pods | grep postgres | awk '{print $1}') --  psql -h localhost -U morpheus --password -p 5432 sre-lab
+
+# PSQL
+\c sre-lab
+\dt
 
 
 k delete deploy orders-api

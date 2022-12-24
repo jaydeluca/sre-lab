@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: load-test
+spec:
+  template:
+    spec:
+      containers:
+      - name: load-test
+        image: load:latest
+        imagePullPolicy: Never
+        command: ["k6", "run", "-e", "HOSTNAME=http://orders-api.default.svc.cluster.local:8080", "/scripts/srelab-api.js"]
+      restartPolicy: Never
+  backoffLimit: 1

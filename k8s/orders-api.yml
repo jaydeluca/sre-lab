@@ -40,8 +40,6 @@ spec:
               value: "8080"
             - name: CONFIG_ENVIRONMENT
               value: k8s
-            - name: DB_HOST
-              value: postgresql
             - name: CUSTOM_JAVA_AGENT
               value: opentelemetry-javaagent.jar
             - name: OTEL_EXPORTER_OTLP_ENDPOINT

@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: orders-migrations
+spec:
+  template:
+    spec:
+      containers:
+      - name: orders-migrations
+        imagePullPolicy: Never
+        image: orders-migrations:latest
+        env:
+          - name: POSTGRES_URL
+            value: jdbc:postgresql://postgres:5432/sre-lab?user=morpheus&password=findneo
+          - name: CHANGELOG_FILE
+            value: migrations.xml
+      restartPolicy: Never
+  backoffLimit: 4

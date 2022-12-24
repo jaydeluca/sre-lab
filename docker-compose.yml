@@ -168,14 +168,18 @@ services:
         tag: "users_api_logs"
 
   load-generator:
-    image: grafana/k6:0.39.0
+    build:
+      context: ./
+      dockerfile: ./users-api/Dockerfile
     depends_on:
       - "api"
     networks:
       - sre-lab
     volumes:
       - ./load/:/scripts
-    command: run -e HOSTNAME=http://proxy:10000/orders-api /scripts/srelab-api.js
+    environment:
+      - TARGET_HOSTNAME=http://proxy:10000/orders-api
+      - FILENAME=srelab-api.js
 
   logstash:
     image: logstash:7.11.1

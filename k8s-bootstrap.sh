@@ -19,7 +19,7 @@ kubectl create ns platform
 helm --namespace platform install signoz signoz/signoz
 
 POD_NAME=$(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}")
-kubectl --namespace platform port-forward "$POD_NAME" 3301:3301 &
+kubectl --namespace platform port-forward "$POD_NAME" 3301:3301
 
 # Apps
 

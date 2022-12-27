@@ -32,14 +32,14 @@ Helm version >= 3.8
 
 ### About
 This lab contains the following components:
-- Kotlin Dropwizard API (api)
+- Kotlin Dropwizard API (orders-api)
 - Golang API (users-api)
 - Postgres DB
 - K6 load generation
-- Elasticsearch observability tools
-    - Kibana for logs
-    - APM
-    - Metrics
+- Service Mesh (envoy/istio)
+- Observability tools
+    - Elastic
+    - SigNoz
 
 ### Current Topology
 
@@ -47,9 +47,8 @@ This lab contains the following components:
 
 
 ## TODO
-- [ ] Create K8s configs and deployments for minikube
+- [x] Create K8s configs
 - [ ] Control plane (istio)
-- [ ] Look into Grafana vs Elastic for charting metrics
 - [ ] Message bus for triggering changes in state
 - [ ] Mechanism for triggering load tests
 - [ ] interface for scenarios
@@ -59,8 +58,4 @@ This lab contains the following components:
   - [ ] SigNoz
   - [ ] Datadog
   - [ ] New Relic
-
-
-Low Priority:
-- [ ] Improve indexing/readability of app logs in kibana
-
+ - [ ] Experiment with [Coroot](https://github.com/coroot/coroot)

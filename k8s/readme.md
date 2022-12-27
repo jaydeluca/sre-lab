@@ -9,7 +9,7 @@ Run from project root:
 
 
 Useful Commands
-```
+```bash
 k get services
 
 k get pods
@@ -30,10 +30,12 @@ k apply -f k8s/orders-api.yml
 
 k exec -it $(k get pods | grep postgres | awk '{print $1}') --  psql -h localhost -U morpheus --password -p 5432 sre-lab
 
-# PSQL
+# PSQL, check schema
 \c sre-lab
 \dt
 
+# Port forward Signoz
+kubectl --namespace platform port-forward "$POD_NAME" 3301:3301
 
 k delete deploy orders-api
 ```

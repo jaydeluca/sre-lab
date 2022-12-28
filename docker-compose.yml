@@ -177,9 +177,7 @@ services:
       - sre-lab
     volumes:
       - ./load/:/scripts
-    environment:
-      - TARGET_HOSTNAME=http://proxy:10000/orders-api
-      - FILENAME=srelab-api.js
+    command: k6 run -e HOSTNAME=http://proxy:10000/orders-api /scripts/srelab-api.js
 
   logstash:
     image: logstash:7.11.1

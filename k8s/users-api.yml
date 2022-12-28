@@ -39,8 +39,6 @@ spec:
               value: "true"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "signoz-otel-collector.platform.svc.cluster.local:4317"
-            - name: OTEL_RESOURCE_ATTRIBUTES
-              value: service.name=users-api
           ports:
             - containerPort: 9996
           livenessProbe:

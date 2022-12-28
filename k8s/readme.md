@@ -22,7 +22,7 @@ k apply -f k8s/postgres-config.yaml
 
 k logs -f {pod} 
 
-k logs -f $(k get pods | grep orders-api | awk '{print $1}')
+kubectl logs -f $(k get pods | grep users-api | awk '{print $1}')
 
 k apply -f k8s/users-api.yml
 

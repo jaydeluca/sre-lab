@@ -1,33 +1,27 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
+	"github.com/jaydeluca/sre-lab/users-api/controllers"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"google.golang.org/grpc/credentials"
+
+	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
-	"time"
+
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-}
-
-type User struct {
-	Id   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	_, err := w.Write(response)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 }
 
 func getEnv(key, fallback string) string {
@@ -37,31 +31,66 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+var (
+	serviceName  = os.Getenv("SERVICE_NAME")
+	collectorURL = os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+	insecure     = os.Getenv("INSECURE_MODE")
+)
+
+func initTracer() func(context.Context) error {
+
+	secureOption := otlptracegrpc.WithTLSCredentials(credentials.NewClientTLSFromCert(nil, ""))
+	if len(insecure) > 0 {
+		secureOption = otlptracegrpc.WithInsecure()
+	}
+
+	exporter, err := otlptrace.New(
+		context.Background(),
+		otlptracegrpc.NewClient(
+			secureOption,
+			otlptracegrpc.WithEndpoint(collectorURL),
+		),
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	resources, err := resource.New(
+		context.Background(),
+		resource.WithAttributes(
+			attribute.String("service.name", serviceName),
+			attribute.String("library.language", "go"),
+		),
+	)
+	if err != nil {
+		log.Printf("Could not set resources: ", err)
+	}
+
+	otel.SetTracerProvider(
+		sdktrace.NewTracerProvider(
+			sdktrace.WithSampler(sdktrace.AlwaysSample()),
+			sdktrace.WithBatcher(exporter),
+			sdktrace.WithResource(resources),
+		),
+	)
+	return exporter.Shutdown
+}
+
 func main() {
+	cleanup := initTracer()
+	defer cleanup(context.Background())
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		enableCors(&w)
+	r := gin.Default()
+	r.Use(otelgin.Middleware(serviceName))
+	r.GET("/", controllers.FindUsers)
+	r.GET("/health", controllers.HealthCheck)
 
-		rand.Seed(time.Now().UnixNano())
-		n := rand.Intn(3) // n will be between 0 and 10
-		fmt.Printf("Sleeping %d seconds...\n", n)
-		time.Sleep(time.Duration(n)*time.Second)
-
-		user := User{
-			Id:   29,
-			Name: "test",
-		}
-		fmt.Println(fmt.Sprintf("User: %v", user))
-		respondWithJSON(w, http.StatusOK, user)
-
-	})
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		enableCors(&w)
-		respondWithJSON(w, http.StatusOK, "Success")
-	})
-
+	
 	port := getEnv("PORT", "9996")
 	portString := fmt.Sprintf(":%v", port)
 	fmt.Printf("Starting server on port %v", port)
-	log.Fatal(http.ListenAndServe(portString, nil))
+	err := r.Run(portString)
+	if err != nil {
+		return 
+	}
 }

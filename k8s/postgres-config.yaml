@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: sre-lab
+  POSTGRES_USER: morpheus
+  POSTGRES_PASSWORD: findneo
+

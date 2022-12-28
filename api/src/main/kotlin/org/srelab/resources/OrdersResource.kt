@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType
 @Produces(MediaType.APPLICATION_JSON)
 class OrdersResource constructor(
     metricRegistry: MetricRegistry,
-    private val client: UsersClient,
+    private val usersClient: UsersClient,
     private val orderDao: OrderDao
 ) {
 
@@ -32,7 +32,7 @@ class OrdersResource constructor(
             singleOrderCounter.inc()
             return listOf(orderDao.findById(it))
         }
-        client.get("/")
+        usersClient.get("/")
         allOrdersCounter.inc()
         return orderDao.findAll()
     }

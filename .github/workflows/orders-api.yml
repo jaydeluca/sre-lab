@@ -1,4 +1,4 @@
-name: API
+name: Orders API
 
 on:
   push:

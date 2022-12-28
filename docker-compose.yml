@@ -128,10 +128,12 @@ services:
       - DB_USERNAME=morpheus
       - DB_PASSWORD=findneo
       - DB_NAME=sre-lab
+      - CUSTOM_JAVA_AGENT=apm.jar
       - ELASTIC_APM_SERVICE_NAME=srelab-api
       - ELASTIC_APM_SERVER_URLS=http://apm-server:8200
       - ELASTIC_APM_SECRET_TOKEN=
       - ELASTIC_APM_APPLICATION_PACKAGES=org.srelab
+      - CONFIG_ENVIRONMENT=dev
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -166,14 +168,16 @@ services:
         tag: "users_api_logs"
 
   load-generator:
-    image: grafana/k6:0.39.0
+    build:
+      context: ./
+      dockerfile: ./users-api/Dockerfile
     depends_on:
       - "api"
     networks:
       - sre-lab
     volumes:
       - ./load/:/scripts
-    command: run -e HOSTNAME=http://proxy:10000/orders-api /scripts/srelab-api.js
+    command: k6 run -e HOSTNAME=http://proxy:10000/orders-api /scripts/srelab-api.js
 
   logstash:
     image: logstash:7.11.1

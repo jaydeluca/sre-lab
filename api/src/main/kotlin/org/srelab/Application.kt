@@ -15,7 +15,8 @@ import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import org.srelab.guice.ApplicationModule
 import org.srelab.guice.ClientsModule
-import org.srelab.resources.HealthCheckResource
+import org.srelab.resources.HealthCheckController
+import org.srelab.resources.BasicHealthCheck
 import org.srelab.resources.OrdersResource
 import java.text.SimpleDateFormat
 
@@ -68,6 +69,7 @@ class Application : Application<ApplicationConfig>() {
 
         environment.jersey().register(OrdersResource(metricRegistry, usersClient, orderDao))
         environment.jersey().register(JsonProcessingExceptionMapper(true))
-        environment.healthChecks().register("HealthCheck", HealthCheckResource())
+        environment.jersey().register(HealthCheckController(environment.healthChecks()))
+        environment.healthChecks().register("HealthCheck", BasicHealthCheck())
     }
 }

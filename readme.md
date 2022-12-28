@@ -2,8 +2,7 @@
 
 ## Setup
 
-### Prerequisites 
-Current setup supports docker only at the moment
+### Docker compose
 
 ```
 docker compose up -d
@@ -20,18 +19,27 @@ docker compose up -d
   - 12201 (logstash)
   - 9996 (users api)
 
-@TODO Minikube / K8 option
+###  K8s
+Requirements:  
+Kubernetes version >= 1.21  
+Helm version >= 3.8
+
+```
+./build-containers.sh
+./k8s-bootstrap.sh
+```
+
 
 ### About
 This lab contains the following components:
-- Kotlin Dropwizard API (api)
+- Kotlin Dropwizard API (orders-api)
 - Golang API (users-api)
 - Postgres DB
 - K6 load generation
-- Elasticsearch observability tools
-    - Kibana for logs
-    - APM
-    - Metrics
+- Service Mesh (envoy/istio)
+- Observability tools
+    - Elastic
+    - SigNoz
 
 ### Current Topology
 
@@ -39,19 +47,15 @@ This lab contains the following components:
 
 
 ## TODO
-- [ ] Create K8s configs and deployments for minikube
+- [x] Create K8s configs
 - [ ] Control plane (istio)
-- [ ] Look into Grafana vs Elastic for charting metrics
 - [ ] Message bus for triggering changes in state
 - [ ] Mechanism for triggering load tests
 - [ ] interface for scenarios
 - [ ] ability to reset
 - [ ] Add support for multiple APMs
   - [x] Elastic
+  - [ ] SigNoz
   - [ ] Datadog
   - [ ] New Relic
-
-
-Low Priority:
-- [ ] Improve indexing/readability of app logs in kibana
-
+ - [ ] Experiment with [Coroot](https://github.com/coroot/coroot)

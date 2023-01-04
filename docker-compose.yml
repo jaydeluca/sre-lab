@@ -128,7 +128,7 @@ services:
       - DB_USERNAME=morpheus
       - DB_PASSWORD=findneo
       - DB_NAME=sre-lab
-      - CUSTOM_JAVA_AGENT=apm.jar
+      - CUSTOM_JAVA_AGENT=elastic-apm-agent.jar
       - ELASTIC_APM_SERVICE_NAME=srelab-api
       - ELASTIC_APM_SERVER_URLS=http://apm-server:8200
       - ELASTIC_APM_SECRET_TOKEN=
@@ -151,7 +151,6 @@ services:
       retries: 10
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8081/healthcheck
 
-
   users-api:
     hostname: users-api
     build:
@@ -170,14 +169,16 @@ services:
   load-generator:
     build:
       context: ./
-      dockerfile: ./users-api/Dockerfile
+      dockerfile: ./load/Dockerfile
     depends_on:
       - "api"
     networks:
       - sre-lab
     volumes:
       - ./load/:/scripts
-    command: k6 run -e HOSTNAME=http://proxy:10000/orders-api /scripts/srelab-api.js
+    environment:
+      - HOSTNAME=http://proxy:10000/orders-api
+    command: run /scripts/srelab-api.js
 
   logstash:
     image: logstash:7.11.1

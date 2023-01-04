@@ -22,7 +22,6 @@ docker compose up -d
 View Elastic APM: [http://localhost:5601/app/apm/services](http://localhost:5601/app/apm/services)
 
 
-
 ###  K8s
 Requirements:  
 Kubernetes version >= 1.21  

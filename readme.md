@@ -19,6 +19,10 @@ docker compose up -d
   - 12201 (logstash)
   - 9996 (users api)
 
+View Elastic APM: [http://localhost:5601/app/apm/services](http://localhost:5601/app/apm/services)
+
+
+
 ###  K8s
 Requirements:  
 Kubernetes version >= 1.21  

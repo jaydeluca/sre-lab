@@ -22,4 +22,6 @@ POD_NAME=$(kubectl get pods --namespace platform -l "app.kubernetes.io/name=sign
 kubectl apply -f k8s/users-api.yml
 kubectl apply -f k8s/orders-api.yml
 
+echo "[INFO] Waiting for signoz pods to be in ready state -> Port forwarding"
+kubectl -n platform wait pod --for=condition=Ready --all --timeout=300s
 kubectl --namespace platform port-forward "$POD_NAME" 3301:3301

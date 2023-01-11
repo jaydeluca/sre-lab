@@ -1,6 +1,17 @@
 #!/bin/bash
 kubectl config use-context docker-desktop
 
+# Helm Dashboard
+echo "[INFO] Creating helm-ui dashbaord for helm releases" 
+helm repo add komodorio https://helm-charts.komodor.io
+helm repo update
+helm upgrade --install helm-dashboard komodorio/helm-dashboard --set service.port=9090 --wait
+
+HELM_POD=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=helm-dashboard,app.kubernetes.io/instance=helm-dashboard" -o jsonpath="{.items[0].metadata.name}")
+echo "[INFO] Waiting for helm-dashboard pod $HELM_POD startup to be in ready state -> Port forwarding"
+kubectl -n platform wait pod --for=condition=Ready "$HELM_POD" --timeout=120s
+kubectl --namespace default port-forward $HELM_POD 9090:8080 &
+
 # Add Charts
 helm repo add signoz https://charts.signoz.io
 helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -11,6 +22,11 @@ kubectl apply -f k8s/postgres-config.yaml
 kubectl apply -f k8s/postgres-pvc-pv.yaml
 kubectl apply -f k8s/postgres-deployment.yaml
 kubectl apply -f k8s/postgres-service.yaml
+
+POSTGRES_POD=$(kubectl get pods --namespace default -l "app=postgres" -o jsonpath="{.items[0].metadata.name}")
+echo "[INFO] Waiting for postgres pod $POSTGRES_POD startup to be in ready state -> Port forwarding"
+kubectl -n default wait pod --for=condition=Ready "$POSTGRES_POD" --timeout=120s
+kubectl --namespace default port-forward "$POSTGRES_POD" 5432:5432 &
 
 # SigNoz
 DEFAULT_STORAGE_CLASS=$(kubectl get storageclass -o=jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}')
@@ -48,4 +64,9 @@ kubectl apply -f k8s/orders-api.yml
 
 echo "[INFO] Waiting for signoz pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
 kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s
-kubectl --namespace platform port-forward "$SIGNOZ_FRONTEND_POD" 3301:3301
+kubectl --namespace platform port-forward "$SIGNOZ_FRONTEND_POD" 3301:3301 &
+
+echo "[INFO] port-forward SET on the following pods:"
+echo "       ~> $HELM_POD 9090:9090" 
+echo "       ~> $POSTGRES_POD 5432:5432"
+echo "       ~> $SIGNOZ_FRONTEND_POD 3301:3301" 

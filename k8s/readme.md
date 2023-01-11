@@ -2,6 +2,12 @@
 
 Start a cluster
 
+Prerequisites:
+- Helm
+- Kubectl
+- Istio
+- Docker
+
 Run from project root:
 ```
 ./k8s-bootstrap.sh
@@ -38,4 +44,9 @@ k exec -it $(k get pods | grep postgres | awk '{print $1}') --  psql -h localhos
 kubectl --namespace platform port-forward "$POD_NAME" 3301:3301
 
 k delete deploy orders-api
+```
+
+Run Load test
+```
+k delete job load-test & k apply -f k8s/load.yml
 ```

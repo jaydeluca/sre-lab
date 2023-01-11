@@ -3,6 +3,7 @@ kind: Job
 metadata:
   name: load-test
 spec:
+  ttlSecondsAfterFinished: 10
   template:
     spec:
       containers:

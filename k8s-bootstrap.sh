@@ -1,6 +1,11 @@
 #!/bin/bash
 kubectl config use-context docker-desktop
 
+# Add Charts
+helm repo add signoz https://charts.signoz.io
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo update
+
 # Database
 kubectl apply -f k8s/postgres-config.yaml
 kubectl apply -f k8s/postgres-pvc-pv.yaml
@@ -12,7 +17,6 @@ DEFAULT_STORAGE_CLASS=$(kubectl get storageclass -o=jsonpath='{.items[?(@.metada
 
 kubectl patch storageclass "$DEFAULT_STORAGE_CLASS" -p '{"allowVolumeExpansion": true}'
 
-helm repo add signoz https://charts.signoz.io
 kubectl create ns platform
 helm --namespace platform install signoz signoz/signoz
 
@@ -25,6 +29,20 @@ if [[ "$(docker images -q users-api:latest 2> /dev/null)" == "" ]] \
   sh ./build-containers.sh
 fi
 
+# Service Mesh
+kubectl create namespace istio-system
+helm install istio-base istio/base -n istio-system
+helm install istiod istio/istiod -n istio-system --wait
+
+kubectl label namespace default istio-injection=enabled --overwrite
+istioctl install -f k8s/tracing.yml
+
+# Ingress Gateway
+kubectl create namespace istio-ingress
+kubectl label namespace istio-ingress istio-injection=enabled
+helm install istio-ingress istio/gateway -n istio-ingress --wait
+
+# Apps
 kubectl apply -f k8s/users-api.yml
 kubectl apply -f k8s/orders-api.yml
 

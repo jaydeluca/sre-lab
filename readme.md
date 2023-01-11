@@ -32,6 +32,10 @@ Helm version >= 3.8
 ./k8s-bootstrap.sh
 ```
 
+SigNoz APM available at [http://127.0.0.1:3301/login](http://127.0.0.1:3301/login)
+
+Create a new user and login.
+
 
 ### About
 This lab contains the following components:

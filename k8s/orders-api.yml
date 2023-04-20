@@ -34,7 +34,7 @@ spec:
       containers:
         - name: orders-api
           image: orders-api:latest
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           env:
             - name: PORT
               value: "8080"

@@ -1,37 +1,46 @@
 package org.srelab.resources
 
 import com.codahale.metrics.MetricRegistry
+import com.google.inject.Inject
 import io.dropwizard.hibernate.UnitOfWork
+import io.opentelemetry.api.OpenTelemetry
+import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.Tracer
 import org.srelab.clients.UsersClient
 import org.srelab.core.Order
 import org.srelab.dao.OrderDao
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
-class OrdersResource constructor(
+class OrdersResource @Inject constructor(
     metricRegistry: MetricRegistry,
     private val usersClient: UsersClient,
-    private val orderDao: OrderDao
+    private val orderDao: OrderDao,
+    private val openTelemetry: OpenTelemetry
 ) {
 
     private var singleOrderCounter = metricRegistry.counter("order_retrievals_single")
     private var allOrdersCounter = metricRegistry.counter("order_retrievals_all")
+    private var tracer: Tracer = openTelemetry.getTracer("manual-instrumentation", "1.0.0")
 
     @GET
     @UnitOfWork
     fun getOrders(@QueryParam("id") id: Int?): List<Order?> {
-        id?.let {
-            singleOrderCounter.inc()
-            return listOf(orderDao.findById(it))
+
+        val span: Span = tracer.spanBuilder("get_orders_from_db").startSpan()
+        try {
+            span.makeCurrent().use { ss ->
+                id?.let {
+                    singleOrderCounter.inc()
+                    return listOf(orderDao.findById(it))
+                }
+            }
+        } finally {
+            span.end()
         }
+
         usersClient.get("/")
         allOrdersCounter.inc()
         return orderDao.findAll()

@@ -15,10 +15,12 @@ import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import org.srelab.guice.ApplicationModule
 import org.srelab.guice.ClientsModule
-import org.srelab.resources.HealthCheckController
+import org.srelab.guice.DaoModule
 import org.srelab.resources.BasicHealthCheck
+import org.srelab.resources.HealthCheckController
 import org.srelab.resources.OrdersResource
 import java.text.SimpleDateFormat
+
 
 class Application : Application<ApplicationConfig>() {
 
@@ -45,7 +47,7 @@ class Application : Application<ApplicationConfig>() {
     }
 
     private val hibernate: HibernateBundle<ApplicationConfig?> = object : HibernateBundle<ApplicationConfig?>(
-        Order::class.java
+            Order::class.java
     ) {
         override fun getDataSourceFactory(configuration: ApplicationConfig?): PooledDataSourceFactory {
             return configuration!!.getDataSourceFactory()
@@ -53,21 +55,20 @@ class Application : Application<ApplicationConfig>() {
     }
 
     override fun run(
-        configuration: ApplicationConfig,
-        environment: Environment
+            configuration: ApplicationConfig,
+            environment: Environment
     ) {
         val modules = listOf(
-            ApplicationModule(environment, configuration),
-            ClientsModule()
+                ApplicationModule(environment, configuration),
+                ClientsModule(),
+                DaoModule(hibernate.sessionFactory)
         )
 
         val injector = Guice.createInjector(modules)
         injector.injectMembers(this)
-        val orderDao = OrderDao(hibernate.sessionFactory)
-        val metricRegistry = injector.getInstance<MetricRegistry>()
-        val usersClient = injector.getInstance<UsersClient>()
+        val ordersResource: OrdersResource = injector.getInstance(OrdersResource::class.java)
 
-        environment.jersey().register(OrdersResource(metricRegistry, usersClient, orderDao))
+        environment.jersey().register(ordersResource)
         environment.jersey().register(JsonProcessingExceptionMapper(true))
         environment.jersey().register(HealthCheckController(environment.healthChecks()))
         environment.healthChecks().register("HealthCheck", BasicHealthCheck())

@@ -23,4 +23,5 @@ class ClientsModule : KotlinModule() {
         logger.info("Creating client with base URL: ${configuration.usersClient}")
         return UsersClient.Builder().baseUrl(configuration.usersClient).build()
     }
+
 }

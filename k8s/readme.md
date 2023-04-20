@@ -34,6 +34,7 @@ k apply -f k8s/users-api.yml
 
 k apply -f k8s/orders-api.yml
 
+# Jump into db
 k exec -it $(k get pods | grep postgres | awk '{print $1}') --  psql -h localhost -U morpheus --password -p 5432 sre-lab
 
 # PSQL, check schema

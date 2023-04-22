@@ -27,10 +27,10 @@ class UsersClient private constructor(builder: UsersClient.Builder) : ClientInte
     private val jsonMediaType: MediaType = "application/json; charset=utf-8".toMediaType()
 
     private var client = OkHttpClient()
-        .newBuilder()
-        .connectTimeout(1, TimeUnit.SECONDS)
-        .callTimeout(5, TimeUnit.SECONDS)
-        .build()
+            .newBuilder()
+            .connectTimeout(1, TimeUnit.SECONDS)
+            .callTimeout(5, TimeUnit.SECONDS)
+            .build()
 
     override fun post(url: String, body: String): String? {
         val jsonBody: RequestBody = body.toRequestBody(jsonMediaType)
@@ -46,8 +46,9 @@ class UsersClient private constructor(builder: UsersClient.Builder) : ClientInte
         }
     }
 
-    override fun get(url: String): String? {
+    override fun get(url: String, userId: Int): String? {
         val request: Request = Request.Builder()
+            .header("user_id", userId.toString())
             .url(baseUrl + url)
             .get()
             .build()

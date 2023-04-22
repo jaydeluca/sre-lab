@@ -11,6 +11,7 @@ import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
+import kotlin.random.Random
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,7 +21,6 @@ class OrdersResource @Inject constructor(
     private val orderDao: OrderDao,
     private val openTelemetry: OpenTelemetry
 ) {
-
     private var singleOrderCounter = metricRegistry.counter("order_retrievals_single")
     private var allOrdersCounter = metricRegistry.counter("order_retrievals_all")
     private var tracer: Tracer = openTelemetry.getTracer("manual-instrumentation", "1.0.0")
@@ -28,22 +28,23 @@ class OrdersResource @Inject constructor(
     @GET
     @UnitOfWork
     fun getOrders(@QueryParam("id") id: Int?): List<Order?> {
-
         val span: Span = tracer.spanBuilder("get_orders_from_db").startSpan()
-        try {
-            span.makeCurrent().use { ss ->
+        return try {
+            span.makeCurrent().use {
+                val userId = Random.nextInt(1, 41)
                 id?.let {
+                    span.setAttribute("user_id", userId.toLong())
                     singleOrderCounter.inc()
-                    return listOf(orderDao.findById(it))
+                    listOf(orderDao.findById(it))
+                } ?: run {
+                    usersClient.get("/", userId)
+                    allOrdersCounter.inc()
+                    orderDao.findAll()
                 }
             }
         } finally {
             span.end()
         }
-
-        usersClient.get("/")
-        allOrdersCounter.inc()
-        return orderDao.findAll()
     }
 
     @POST

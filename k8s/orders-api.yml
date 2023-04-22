@@ -34,7 +34,7 @@ spec:
       containers:
         - name: orders-api
           image: orders-api:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           env:
             - name: PORT
               value: "8080"
@@ -46,6 +46,9 @@ spec:
               value: "http://signoz-otel-collector.platform.svc.cluster.local:4317"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=orders-api
+            - name: JVM_ARGS
+              value: -Dotel.instrumentation.dropwizard-metrics.enabled=true
+
           ports:
             - containerPort: 8080
           livenessProbe:

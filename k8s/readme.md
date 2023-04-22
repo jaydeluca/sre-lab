@@ -30,6 +30,10 @@ k logs -f {pod}
 
 kubectl logs -f $(k get pods | grep users-api | awk '{print $1}')
 
+kubectl logs -f $(k get pods | grep orders-api | awk '{print $1}')
+
+kubectl logs -f $(k get pods | grep load-test | awk '{print $1}')
+
 k apply -f k8s/users-api.yml
 
 k apply -f k8s/orders-api.yml
@@ -44,10 +48,14 @@ k exec -it $(k get pods | grep postgres | awk '{print $1}') --  psql -h localhos
 # Port forward Signoz
 kubectl --namespace platform port-forward "$POD_NAME" 3301:3301
 
-k delete deploy orders-api
+
+# Redeploy orders-api
+k delete deploy orders-api & k apply -f k8s/orders-api.yml
 ```
 
 Run Load test
 ```
 k delete job load-test & k apply -f k8s/load.yml
 ```
+
+

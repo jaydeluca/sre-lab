@@ -66,9 +66,11 @@ class Application : Application<ApplicationConfig>() {
 
         val injector = Guice.createInjector(modules)
         injector.injectMembers(this)
-        val ordersResource: OrdersResource = injector.getInstance(OrdersResource::class.java)
 
-        environment.jersey().register(ordersResource)
+        // Register Resources
+        environment.jersey().register(injector.getInstance(OrdersResource::class.java))
+
+        // Other
         environment.jersey().register(JsonProcessingExceptionMapper(true))
         environment.jersey().register(HealthCheckController(environment.healthChecks()))
         environment.healthChecks().register("HealthCheck", BasicHealthCheck())

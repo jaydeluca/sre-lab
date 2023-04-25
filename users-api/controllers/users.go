@@ -17,6 +17,7 @@ func FindUsers(c *gin.Context) {
 
 	span := trace.SpanFromContext(c.Request.Context())
 	span.SetAttributes(attribute.String("controller", "users"))
+	span.SetAttributes(attribute.String("user_id", strconv.Itoa(userId)))
 	span.AddEvent("Retrieve Users", trace.WithAttributes(attribute.Int("userId", userId)))
 
 	if userId == 30 {

@@ -4,23 +4,27 @@ import com.codahale.metrics.MetricRegistry
 import com.google.inject.Inject
 import io.dropwizard.hibernate.UnitOfWork
 import io.opentelemetry.api.OpenTelemetry
-import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.Tracer
 import org.srelab.clients.UsersClient
 import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import org.srelab.utilities.withSpan
-import javax.ws.rs.*
+import javax.ws.rs.GET
+import javax.ws.rs.POST
+import javax.ws.rs.PUT
+import javax.ws.rs.Path
+import javax.ws.rs.PathParam
+import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 import kotlin.random.Random
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
 class OrdersResource @Inject constructor(
-        metricRegistry: MetricRegistry,
-        private val usersClient: UsersClient,
-        private val orderDao: OrderDao,
-        private val openTelemetry: OpenTelemetry
+    metricRegistry: MetricRegistry,
+    private val usersClient: UsersClient,
+    private val orderDao: OrderDao,
+    private val openTelemetry: OpenTelemetry
 ) {
     private var singleOrderCounter = metricRegistry.counter("order_retrievals_single")
     private var allOrdersCounter = metricRegistry.counter("order_retrievals_all")
@@ -73,8 +77,8 @@ class OrdersResource @Inject constructor(
     @UnitOfWork
     @Path("/{id}")
     fun updateOrder(
-            @PathParam("id") id: Int,
-            order: Order
+        @PathParam("id") id: Int,
+        order: Order
     ): Order? {
         orderDao.update(order)
         return orderDao.findById(id)

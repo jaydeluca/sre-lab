@@ -19,13 +19,11 @@ class UsersClient (
             .connectTimeout(1, TimeUnit.SECONDS)
             .callTimeout(5, TimeUnit.SECONDS)
             .build()
-
     init {
         if (openTelemetry != null) {
             OkHttpTelemetry.builder(openTelemetry).build().newCallFactory(client)
         }
     }
-
     override fun post(url: String, body: String): String? {
         val jsonBody: RequestBody = body.toRequestBody(jsonMediaType)
         val request: Request = Request.Builder()
@@ -39,7 +37,6 @@ class UsersClient (
             throw RuntimeException()
         }
     }
-
     override fun get(url: String, userId: Int): String? {
         val request: Request = Request.Builder()
             .header("user_id", userId.toString())

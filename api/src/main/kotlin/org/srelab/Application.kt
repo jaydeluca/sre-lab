@@ -1,8 +1,6 @@
 package org.srelab
 
-import com.codahale.metrics.MetricRegistry
 import com.google.inject.Guice
-import dev.misfitlabs.kotlinguice4.getInstance
 import io.dropwizard.Application
 import io.dropwizard.db.PooledDataSourceFactory
 import io.dropwizard.hibernate.HibernateBundle
@@ -10,9 +8,7 @@ import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper
 import io.dropwizard.migrations.MigrationsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
-import org.srelab.clients.UsersClient
 import org.srelab.core.Order
-import org.srelab.dao.OrderDao
 import org.srelab.guice.ApplicationModule
 import org.srelab.guice.ClientsModule
 import org.srelab.guice.DaoModule
@@ -21,9 +17,7 @@ import org.srelab.resources.HealthCheckController
 import org.srelab.resources.OrdersResource
 import java.text.SimpleDateFormat
 
-
 class Application : Application<ApplicationConfig>() {
-
     companion object {
         @Throws(Exception::class)
         @JvmStatic

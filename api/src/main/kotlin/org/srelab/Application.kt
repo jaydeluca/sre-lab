@@ -41,7 +41,7 @@ class Application : Application<ApplicationConfig>() {
     }
 
     private val hibernate: HibernateBundle<ApplicationConfig?> = object : HibernateBundle<ApplicationConfig?>(
-            Order::class.java
+        Order::class.java
     ) {
         override fun getDataSourceFactory(configuration: ApplicationConfig?): PooledDataSourceFactory {
             return configuration!!.getDataSourceFactory()
@@ -49,13 +49,13 @@ class Application : Application<ApplicationConfig>() {
     }
 
     override fun run(
-            configuration: ApplicationConfig,
-            environment: Environment
+        configuration: ApplicationConfig,
+        environment: Environment
     ) {
         val modules = listOf(
-                ApplicationModule(environment, configuration),
-                ClientsModule(),
-                DaoModule(hibernate.sessionFactory)
+            ApplicationModule(environment, configuration),
+            ClientsModule(),
+            DaoModule(hibernate.sessionFactory)
         )
 
         val injector = Guice.createInjector(modules)

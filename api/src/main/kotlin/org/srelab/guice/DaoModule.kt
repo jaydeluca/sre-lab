@@ -15,5 +15,4 @@ class DaoModule(private val sessionFactory: SessionFactory) : KotlinModule() {
     fun provideOrderDao(): OrderDao {
         return OrderDao(sessionFactory)
     }
-
 }

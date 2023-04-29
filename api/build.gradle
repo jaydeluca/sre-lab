@@ -32,6 +32,13 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.5.0'
     implementation 'com.github.jjagged:metrics-statsd:1.0.0'
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
+
+    // open telemetry
+    implementation 'io.opentelemetry:opentelemetry-api:1.25.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.25.0'
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-okhttp-3.0:1.25.0-alpha'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.25.0'
+    implementation 'io.opentelemetry:opentelemetry-semconv:1.25.0-alpha'
 }
 
 compileKotlin {

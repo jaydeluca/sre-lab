@@ -22,7 +22,7 @@ docker compose up -d
 View Elastic APM: [http://localhost:5601/app/apm/services](http://localhost:5601/app/apm/services)
 
 
-###  K8s
+`###  K8s
 Requirements:  
 Kubernetes version >= 1.21  
 Helm version >= 3.8
@@ -62,7 +62,8 @@ This lab contains the following components:
 - [ ] ability to reset
 - [ ] Add support for multiple APMs
   - [x] Elastic
-  - [ ] SigNoz
+  - [x] SigNoz
   - [ ] Datadog
   - [ ] New Relic
+  - [ ] Automation to toggle between observability tools
  - [ ] Experiment with [Coroot](https://github.com/coroot/coroot)

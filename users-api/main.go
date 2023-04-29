@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/jaydeluca/sre-lab/users-api/controllers"
+	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/grpc/credentials"
 
 	"github.com/gin-gonic/gin"
@@ -73,6 +75,14 @@ func initTracer() func(context.Context) error {
 			sdktrace.WithResource(resources),
 		),
 	)
+
+	otel.SetTextMapPropagator(
+		propagation.NewCompositeTextMapPropagator(
+			b3.New(),
+			propagation.TraceContext{},
+			propagation.Baggage{},
+		),
+	)
 	return exporter.Shutdown
 }
 
@@ -85,12 +95,11 @@ func main() {
 	r.GET("/", controllers.FindUsers)
 	r.GET("/health", controllers.HealthCheck)
 
-	
 	port := getEnv("PORT", "9996")
 	portString := fmt.Sprintf(":%v", port)
 	fmt.Printf("Starting server on port %v", port)
 	err := r.Run(portString)
 	if err != nil {
-		return 
+		return
 	}
 }

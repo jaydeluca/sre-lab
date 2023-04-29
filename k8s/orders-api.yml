@@ -28,6 +28,8 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
         app: orders-api
     spec:
@@ -46,6 +48,8 @@ spec:
               value: "http://signoz-otel-collector.platform.svc.cluster.local:4317"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=orders-api
+            - name: JVM_ARGS
+              value: -Dotel.instrumentation.dropwizard-metrics.enabled=true
           ports:
             - containerPort: 8080
           livenessProbe:

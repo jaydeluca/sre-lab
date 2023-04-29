@@ -29,7 +29,7 @@ export default function() {
     let id = res.json().id
 
     // Fetch the newly created order
-    http.get(`${BASE_URL}/orders?id=${id}`);
+    http.get(`${BASE_URL}/orders/${id}`);
 
     let updatedOrder = {
         "id": id,

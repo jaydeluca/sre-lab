@@ -43,8 +43,12 @@ kubectl label namespace istio-ingress istio-injection=enabled
 helm install istio-ingress istio/gateway -n istio-ingress --wait
 
 # Apps
+kubectl apply -f k8s/orders-migrations.yaml
 kubectl apply -f k8s/users-api.yml
 kubectl apply -f k8s/orders-api.yml
+
+# Kickoff a load test
+kubectl delete job load-test & kubectl apply -f k8s/load.yml
 
 echo "[INFO] Waiting for signoz pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
 kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s

@@ -22,7 +22,7 @@ docker compose up -d
 View Elastic APM: [http://localhost:5601/app/apm/services](http://localhost:5601/app/apm/services)
 
 
-`###  K8s
+###  K8s
 Requirements:  
 Kubernetes version >= 1.21  
 Helm version >= 3.8
@@ -30,6 +30,8 @@ Helm version >= 3.8
 ```
 ./build-containers.sh
 ./k8s-bootstrap.sh
+
+./rebuild-redeploy.sh     # useful when developing
 ```
 
 SigNoz APM available at [http://127.0.0.1:3301/login](http://127.0.0.1:3301/login)
@@ -56,6 +58,7 @@ This lab contains the following components:
 ## TODO
 - [x] Create K8s configs
 - [ ] Control plane (istio)
+- [ ] Get envoy/istio hops included in distributed traces
 - [ ] Message bus for triggering changes in state
 - [ ] Mechanism for triggering load tests
 - [ ] interface for scenarios

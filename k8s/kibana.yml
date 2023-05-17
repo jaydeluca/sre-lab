@@ -1,0 +1,11 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: quickstart
+  annotations:
+    sidecar.istio.io/inject: "false"
+spec:
+  version: 8.7.1
+  count: 1
+  elasticsearchRef:
+    name: quickstart

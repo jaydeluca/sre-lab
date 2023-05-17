@@ -1,18 +1,20 @@
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
-  name: istio-control-plane
   namespace: istio-system
+  name: istiocontrolplane
 spec:
+  profile: default
   meshConfig:
     enableTracing: true
     defaultConfig:
       tracing:
-        sampling: 100.0
-        max_path_tag_length: 256
-        openCensusAgent:
-          address: "http://signoz-otel-collector.platform.svc.cluster.local:4317"
+        sampling: 100 # Adjust the sampling rate as needed (0-100)
         custom_tags:
-          clusterID:
-            environment:
-              name: ISTIO_META_CLUSTER_ID
+          tag1:
+            literal:
+              value: "custom-value"
+      # Configure the tracing backend (Zipkin, Jaeger, etc.)
+      tracing:
+        zipkin:
+          address: signoz-otel-collector.platform.svc.cluster.local:4317

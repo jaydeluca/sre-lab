@@ -28,6 +28,8 @@ kubectl apply -f k8s/elasticsearch.yml
 
 kubectl apply -f k8s/kibana.yml
 
+kubectl apply -f k8s/elastic-apm.yml
+
 
 # SigNoz
 # kubectl create ns platform

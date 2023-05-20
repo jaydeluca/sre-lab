@@ -38,11 +38,13 @@ k logs -f {pod}
 
 kubectl logs -f $(k get pods | grep users-api | awk '{print $1}')
 
-kubectl logs -f $(k get pods | grep orders-api | awk '{print $1}')
+kubectl logs -f $(k get pods | grep Running | grep orders-api | awk '{print $1}')
 
 kubectl logs -f $(k get pods | grep load-test | awk '{print $1}')
 
 kubectl logs -f $(k get pods | grep quickstart-kb | awk '{print $1}')
+
+k exec -it $(k get pods | grep dnsutil | awk '{print $1}') --  bash
 
 k apply -f k8s/users-api.yml
 

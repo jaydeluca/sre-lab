@@ -43,11 +43,18 @@ spec:
             - name: CONFIG_ENVIRONMENT
               value: k8s
             - name: CUSTOM_JAVA_AGENT
-              value: opentelemetry-javaagent.jar
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://signoz-otel-collector.platform.svc.cluster.local:4317"
+              # value: opentelemetry-javaagent.jar
+              value: elastic-apm-agent.jar
+            # - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              # value: "http://signoz-otel-collector.platform.svc.cluster.local:4317"
+            - name: ELASTIC_APM_SERVER_URLS
+              value: "https://apm-server-quickstart-apm-http.default.svc.cluster.local:8200"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=orders-api
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: orders-api
+            - name: ELASTIC_APM_APPLICATION_PACKAGES
+              value: org.srelab
             - name: JVM_ARGS
               value: -Dotel.instrumentation.dropwizard-metrics.enabled=true
           ports:

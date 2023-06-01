@@ -2,7 +2,7 @@ database:
   driverClass: org.postgresql.Driver
   user: morpheus
   password: findneo
-  url: jdbc:postgresql://postgres:5432/sre-lab
+  url: jdbc:postgresql://postgres-postgresql.postgres.svc.cluster.local:5432/postgres
   maxWaitForConnection: 1s
   validationQuery: "/* Health Check */ SELECT 1"
   validationQueryTimeout: 3s

@@ -1,0 +1,25 @@
+kubernetesClusterDomain: cluster.local
+ordersApi:
+  ordersApi:
+    env:
+      configEnvironment: k8s
+      customJavaAgent: opentelemetry-javaagent.jar
+      jvmArgs: -Dotel.instrumentation.dropwizard-metrics.enabled=true
+      otelExporterOtlpEndpoint: http://signoz-otel-collector.platform.svc.cluster.local:4317
+      otelResourceAttributes: service.name=orders-api
+      port: "8080"
+    image:
+      repository: orders-api
+      tag: latest
+    imagePullPolicy: Never
+  ports:
+  - name: default
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: admin
+    port: 8081
+    protocol: TCP
+    targetPort: 8081
+  replicas: 1
+  type: LoadBalancer

@@ -3,7 +3,7 @@ locals {
 }
 
 provider "kubernetes" {
-  config_context   = var.config_context
+  config_context   = local.config_context
   load_config_file = true
 }
 

@@ -4,3 +4,6 @@
 api/build/*
 api/out/*
 api/elastic-apm-agent-*
+
+terraform/k8s/.terraform/*
+terraform/k8s/.terraform.lock.hcl

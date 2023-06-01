@@ -1,5 +1,8 @@
 # SRE Lab
 
+The purpose of this project is to act as a playground for various tools and experiments. 
+
+
 ## Setup
 
 ### Docker compose

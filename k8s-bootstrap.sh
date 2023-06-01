@@ -13,29 +13,28 @@ kubectl apply -f k8s/postgres-deployment.yaml
 kubectl apply -f k8s/postgres-service.yaml
 
 
-
 DEFAULT_STORAGE_CLASS=$(kubectl get storageclass -o=jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}')
 
 kubectl patch storageclass "$DEFAULT_STORAGE_CLASS" -p '{"allowVolumeExpansion": true}'
 
 # ECK
 
-kubectl create -f https://download.elastic.co/downloads/eck/2.7.0/crds.yaml
+# kubectl create -f https://download.elastic.co/downloads/eck/2.7.0/crds.yaml
 
-kubectl apply -f https://download.elastic.co/downloads/eck/2.7.0/operator.yaml
+# kubectl apply -f https://download.elastic.co/downloads/eck/2.7.0/operator.yaml
 
-kubectl apply -f k8s/elasticsearch.yml
+# kubectl apply -f k8s/elasticsearch.yml
 
-kubectl apply -f k8s/kibana.yml
+# kubectl apply -f k8s/kibana.yml
 
-kubectl apply -f k8s/elastic-apm.yml
+# kubectl apply -f k8s/elastic-apm.yml
 
 
 # SigNoz
-# kubectl create ns platform
-# helm --namespace platform install signoz signoz/signoz
+kubectl create ns platform
+helm --namespace platform install signoz signoz/signoz
 
-# SIGNOZ_FRONTEND_POD=$(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}")
+SIGNOZ_FRONTEND_POD=$(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}")
 
 # Build apps if docker images do not exist
 if [[ "$(docker images -q users-api:latest 2> /dev/null)" == "" ]] \
@@ -68,9 +67,11 @@ kubectl delete job load-test & kubectl apply -f k8s/load.yml
 
 # echo "[INFO] Waiting for kibana pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
 # kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s
-kubectl port-forward service/quickstart-kb-http 5601
+# kubectl port-forward service/quickstart-kb-http 5601
 
 
-# echo "[INFO] Waiting for signoz pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
-# kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s
-# kubectl --namespace platform port-forward "$SIGNOZ_FRONTEND_POD" 3301:3301
+echo "[INFO] Waiting for signoz pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
+kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s
+kubectl --namespace platform port-forward "$SIGNOZ_FRONTEND_POD" 3301:3301
+
+kubectl --namespace postgres port-forward $(k get pods -n postgres | grep postgres | awk '{print $1}') 5432:5432

@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: orders-migrations
+        image: orders-migrations:latest
+        imagePullPolicy: Never
+        env:
+          - name: POSTGRES_URL
+            value: jdbc:postgresql://{{ .Values.database.host }}:5432/{{ .Values.database.name }}?user={{ .Values.database.user }}&password={{ .Values.database.password }}
+          - name: CHANGELOG_FILE
+            value: migrations.xml
+      restartPolicy: Never
+  backoffLimit: 4

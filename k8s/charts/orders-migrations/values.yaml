@@ -1,0 +1,9 @@
+image:
+  repository: orders-migrations
+  tag: latest
+
+database:
+  host: postgres-postgresql.postgres.svc.cluster.local
+  user: morpheus
+  password: findneo
+  name: sre-lab

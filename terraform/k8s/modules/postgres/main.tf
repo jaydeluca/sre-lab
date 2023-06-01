@@ -17,4 +17,15 @@ resource "helm_release" "postgres" {
     name  = "global.postgresql.auth.postgresqlPassword"
     value = var.db_password
   }
+
+  set {
+    name = "primary.initdb.scripts.init\\.sql"
+    value = <<EOF
+CREATE USER morpheus WITH PASSWORD 'findneo';
+CREATE DATABASE "sre-lab";
+GRANT CONNECT ON DATABASE "sre-lab" TO morpheus WITH GRANT OPTION;
+GRANT CREATE ON DATABASE "sre-lab" TO morpheus WITH GRANT OPTION;
+ALTER ROLE morpheus WITH CREATEROLE;
+EOF
+  }
 }

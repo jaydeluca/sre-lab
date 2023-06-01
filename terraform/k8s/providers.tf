@@ -1,5 +1,5 @@
-variable "config_context" {
-  default = "docker-desktop"
+locals {
+  config_context = "docker-desktop"
 }
 
 provider "kubernetes" {
@@ -18,7 +18,7 @@ terraform {
 
 provider "helm" {
   kubernetes {
-    config_context = var.config_context
+    config_context = local.config_context
     config_path    = "~/.kube/config"
   }
 }

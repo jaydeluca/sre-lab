@@ -38,6 +38,8 @@ k logs -f {pod}
 
 kubectl logs -f $(k get pods | grep users-api | awk '{print $1}')
 
+kubectl logs -f $(k get pods | grep orders-migrations | awk '{print $1}')
+
 kubectl logs -f $(k get pods | grep Running | grep orders-api | awk '{print $1}')
 
 kubectl logs -f $(k get pods | grep load-test | awk '{print $1}')

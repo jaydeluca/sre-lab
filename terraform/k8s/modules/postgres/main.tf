@@ -11,8 +11,8 @@ resource "helm_release" "postgres" {
   set {
     name  = "primary.initdb.scripts.init\\.sql"
     value = <<EOF
-CREATE USER morpheus WITH PASSWORD 'findneo';
-GRANT ALL ON SCHEMA public TO morpheus;
+CREATE USER ${var.db_user} WITH PASSWORD '${var.db_password}';
+GRANT ALL ON SCHEMA public TO ${var.db_user};
 EOF
   }
-}
+} 

@@ -3,13 +3,12 @@ variable "chart_version" {
 }
 
 variable "db_user" {
+  type = string
   default = "morpheus"
 }
 
 variable "db_password" {
+  type = string
   default = "findneo"
 }
 
-variable "db_name" {
-  default = "sre-lab"
-}

@@ -6,4 +6,4 @@ database:
   host: postgres-postgresql.postgres.svc.cluster.local
   user: morpheus
   password: findneo
-  name: sre-lab
+  name: postgres

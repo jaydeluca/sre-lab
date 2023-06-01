@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "fullname" . }}
+  namespace: "postgres"
 spec:
   template:
     spec:
@@ -14,5 +15,7 @@ spec:
             value: jdbc:postgresql://{{ .Values.database.host }}:5432/{{ .Values.database.name }}?user={{ .Values.database.user }}&password={{ .Values.database.password }}
           - name: CHANGELOG_FILE
             value: migrations.xml
+          - name: LIQUIBASE_LOG_LEVEL
+            value: ERROR
       restartPolicy: Never
   backoffLimit: 4

@@ -1,8 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fullname" . }}
-  namespace: "postgres"
+  name: orders-migrations
 spec:
   template:
     spec:

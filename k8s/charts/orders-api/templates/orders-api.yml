@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "orders-api.fullname" . }}-orders-api
+  name: orders-api
   labels:
   {{- include "orders-api.labels" . | nindent 4 }}
 spec:
@@ -15,7 +15,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "orders-api.fullname" . }}-orders-api
+  name: orders-api
   labels:
   {{- include "orders-api.labels" . | nindent 4 }}
 spec:
@@ -35,22 +35,22 @@ spec:
       containers:
       - env:
         - name: PORT
-          value: {{ quote .Values.ordersApi.ordersApi.env.port }}
+          value: {{ quote .Values.ordersApi.env.port }}
         - name: CONFIG_ENVIRONMENT
-          value: {{ quote .Values.ordersApi.ordersApi.env.configEnvironment }}
+          value: {{ quote .Values.ordersApi.env.configEnvironment }}
         - name: CUSTOM_JAVA_AGENT
-          value: {{ quote .Values.ordersApi.ordersApi.env.customJavaAgent }}
+          value: {{ quote .Values.ordersApi.env.customJavaAgent }}
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: {{ quote .Values.ordersApi.ordersApi.env.otelExporterOtlpEndpoint }}
+          value: {{ quote .Values.ordersApi.env.otelExporterOtlpEndpoint }}
         - name: OTEL_RESOURCE_ATTRIBUTES
-          value: {{ quote .Values.ordersApi.ordersApi.env.otelResourceAttributes }}
+          value: {{ quote .Values.ordersApi.env.otelResourceAttributes }}
         - name: JVM_ARGS
-          value: {{ quote .Values.ordersApi.ordersApi.env.jvmArgs }}
+          value: {{ quote .Values.ordersApi.env.jvmArgs }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.ordersApi.ordersApi.image.repository }}:{{ .Values.ordersApi.ordersApi.image.tag
+        image: {{ .Values.ordersApi.image.repository }}:{{ .Values.ordersApi.image.tag
           | default .Chart.AppVersion }}
-        imagePullPolicy: {{ .Values.ordersApi.ordersApi.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.ordersApi.imagePullPolicy }}
         livenessProbe:
           httpGet:
             path: /healthcheck

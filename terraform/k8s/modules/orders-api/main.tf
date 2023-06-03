@@ -2,5 +2,5 @@ resource "helm_release" "orders-api" {
   name = "orders-api"
 
   chart     = "../../k8s/charts/orders-api"
-  namespace = "default"
+  namespace = var.namespace
 }

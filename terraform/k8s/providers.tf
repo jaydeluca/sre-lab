@@ -3,16 +3,18 @@ locals {
 }
 
 provider "kubernetes" {
-  config_context   = local.config_context
-  load_config_file = true
+  config_path    = "~/.kube/config"
+  config_context = local.config_context
 }
 
 
 terraform {
   backend "kubernetes" {
-    config_path    = "~/.kube/config"
-    config_context = "docker-desktop"
-    secret_suffix  = "state"
+    config_path      = "~/.kube/config"
+    config_context   = "docker-desktop"
+    load_config_file = true
+    secret_suffix    = "state"
+    version          = ">= 2.21.0"
   }
 }
 

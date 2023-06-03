@@ -1,12 +1,40 @@
+locals {
+  application_namespace = "production"
+}
+
 module "postgres" {
   source = "./modules/postgres"
 }
 
-module "orders-migrations" {
-  source = "./modules/orders-migrations"
+module "application_namespace" {
+  source = "./modules/kubernetes-namespace"
+  name   = local.application_namespace
 }
 
+module "orders-migrations" {
+  source     = "./modules/orders-migrations"
+  namespace  = local.application_namespace
+  depends_on = [module.application_namespace, module.postgres]
+}
 
 module "orders-api" {
-  source = "./modules/orders-api"
+  source     = "./modules/orders-api"
+  namespace  = local.application_namespace
+  depends_on = [module.application_namespace, module.orders-migrations]
+}
+
+module "users-api" {
+  source    = "./modules/users-api"
+  namespace = local.application_namespace
+}
+
+module "signoz_namespace" {
+  source = "./modules/kubernetes-namespace"
+  name   = "platform"
+}
+
+module "signoz" {
+  depends_on = [module.signoz_namespace]
+  source     = "./modules/signoz"
+  namespace  = "platform"
 }

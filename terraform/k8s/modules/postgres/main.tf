@@ -15,4 +15,4 @@ CREATE USER ${var.db_user} WITH PASSWORD '${var.db_password}';
 GRANT ALL ON SCHEMA public TO ${var.db_user};
 EOF
   }
-} 
+}

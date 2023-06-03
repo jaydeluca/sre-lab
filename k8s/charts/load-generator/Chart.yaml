@@ -1,0 +1,7 @@
+apiVersion: v2
+name: load-generator
+version: 0.1.2
+description: A Helm chart for running a load test
+metadata:
+  name: load-generator
+  fullname: "{{ .Release.Name }}-{{ .Chart.Version }}"

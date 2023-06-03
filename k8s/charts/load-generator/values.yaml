@@ -1,0 +1,9 @@
+image:
+  repository: load-generator
+  tag: latest
+
+# database:
+#   host: postgres-postgresql.postgres.svc.cluster.local
+#   user: morpheus
+#   password: findneo
+#   name: postgres

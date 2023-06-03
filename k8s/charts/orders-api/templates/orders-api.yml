@@ -29,8 +29,8 @@ spec:
       labels:
         app: orders-api
       {{- include "orders-api.selectorLabels" . | nindent 8 }}
-      annotations:
-        sidecar.istio.io/inject: "true"
+      # annotations:
+      #   sidecar.istio.io/inject: "true"
     spec:
       containers:
       - env:

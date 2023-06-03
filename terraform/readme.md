@@ -4,6 +4,10 @@ The cluster will be setup via helm charts that are applied via terraform
 
 - Create postgres db
 - Run migrations on the db to setup schema
+- Deploy orders api
+- Deploy users api
+- Deploy signoz
+- Deploy a load generator
 
 
 ```

@@ -42,7 +42,7 @@ kubectl logs -f $(k get pods | grep orders-migrations | awk '{print $1}')
 
 kubectl logs -f $(k get pods | grep Running | grep orders-api | awk '{print $1}')
 
-kubectl logs -f $(k get pods | grep load-test | awk '{print $1}')
+kubectl logs -n production -f $(k get pods -n production | grep load-generator | awk '{print $1}')
 
 kubectl logs -f $(k get pods | grep quickstart-kb | awk '{print $1}')
 

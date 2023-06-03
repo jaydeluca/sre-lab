@@ -38,3 +38,9 @@ module "signoz" {
   source     = "./modules/signoz"
   namespace  = "platform"
 }
+
+module "load-generator" {
+  depends_on = [module.orders-api, module.users-api, module.signoz]
+  source     = "./modules/load-generator"
+  namespace  = local.application_namespace
+}

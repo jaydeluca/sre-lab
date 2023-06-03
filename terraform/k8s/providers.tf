@@ -14,7 +14,6 @@ terraform {
     config_context   = "docker-desktop"
     load_config_file = true
     secret_suffix    = "state"
-    version          = ">= 2.21.0"
   }
 }
 

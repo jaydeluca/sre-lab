@@ -28,13 +28,8 @@ module "users-api" {
   namespace = local.application_namespace
 }
 
-module "signoz_namespace" {
-  source = "./modules/kubernetes-namespace"
-  name   = "platform"
-}
 
 module "signoz" {
-  depends_on = [module.signoz_namespace]
   source     = "./modules/signoz"
   namespace  = "platform"
 }
@@ -43,4 +38,8 @@ module "load-generator" {
   depends_on = [module.orders-api, module.users-api, module.signoz]
   source     = "./modules/load-generator"
   namespace  = local.application_namespace
+}
+
+module "service-mesh" {
+  source = "./modules/istio"  
 }

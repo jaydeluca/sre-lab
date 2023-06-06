@@ -20,4 +20,9 @@ kubectl run postgresql-client --rm --tty -i --restart='Never' --namespace postgr
 
 # Port forward signoz until we setup ingress
 kubectl --namespace platform port-forward "$(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}")" 3301:3301
+
+# Load generator logs
+kubectl logs -n production -f $(k get pods -n production | grep load-generator | awk '{print $1}')
+
+kubectl logs -n production -f $(k get pods -n production | grep orders-api | awk '{print $1}')
 ```

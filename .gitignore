@@ -7,3 +7,8 @@ api/elastic-apm-agent-*
 
 terraform/k8s/.terraform/*
 terraform/k8s/.terraform.lock.hcl
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+

@@ -57,4 +57,3 @@ depends_on = [ module.istio_ingress_namespace, resource.helm_release.istiod ]
 }
 
 
-

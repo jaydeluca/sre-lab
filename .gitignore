@@ -1,6 +1,8 @@
 */.gradle
 *.idea
 */gradle
-api/build/*
-api/out/*
-api/elastic-apm-agent-*
+orders-api/build/*
+orders-api/out/*
+orders-api/elastic-apm-agent-*
+
+terraform/k8s/.terraform*

@@ -1,9 +1,0 @@
-FROM liquibase/liquibase
-
-WORKDIR /liquibase
-
-COPY ./api/src/main/resources/migrations.xml migrations.xml
-COPY ./api/scripts/liquibase_setup.sh liquibase_setup.sh
-
-
-ENTRYPOINT ["sh", "./liquibase_setup.sh"]

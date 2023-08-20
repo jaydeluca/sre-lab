@@ -108,7 +108,7 @@ services:
   liquibase:
     build:
       context: ./
-      dockerfile: ./api/MigrationsDockerfile
+      dockerfile: ./orders-api/MigrationsDockerfile
     networks:
       - sre-lab
     depends_on:
@@ -118,11 +118,11 @@ services:
       - POSTGRES_URL=jdbc:postgresql://postgres:5432/sre-lab?user=morpheus&password=findneo
       - CHANGELOG_FILE=migrations.xml
 
-  api:
+  orders-api:
     hostname: api
     build:
       context: ./
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./orders-api/Dockerfile
     environment:
       - DB_HOST=postgresql
       - DB_USERNAME=morpheus

@@ -1,6 +1,6 @@
 FROM gradle:7.5-jdk17 as BUILD
 
-COPY ./api/. /app
+COPY ./orders-api/. /app
 WORKDIR /app
 
 RUN gradle shadowJar -x test --no-daemon

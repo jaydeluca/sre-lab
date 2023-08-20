@@ -1,4 +1,4 @@
-api/build/*
-api/.gradle/*
-api/gradle/*
-api/out/*
+orders-api/build/*
+orders-api/.gradle/*
+orders-api/gradle/*
+orders-api/out/*

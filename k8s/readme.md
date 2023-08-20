@@ -7,19 +7,30 @@ Prerequisites:
 - Kubectl
 - Istio
 - Docker
+- Terraform
 
-Run from project root:
+
+Terraform
 ```
-./k8s-bootstrap.sh
+cd terraform/k8s
+terraform apply
 ```
 
-The first time you run elastic you will need to get the password:
 
-`kubectl get secret quickstart-es-elastic-user -o go-template='{{.data.elastic | base64decode}}'`
+This will spin up the services, a load test, and SigNoz where you can view whats happening
 
-https://0.0.0.0:5601/
+## Accessing
 
-username: elastic
+```
+kubectl --namespace platform port-forward $(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}") 3301:3301
+```
+
+http://localhost:3301
+
+Create a new account
+
+
+## Troubleshooting
 
 
 Useful Commands
@@ -61,7 +72,7 @@ k exec -it $(k get pods | grep postgres | awk '{print $1}') --  psql -h localhos
 \d orders       # schema for table
 
 # Port forward Signoz
-kubectl --namespace platform port-forward "$POD_NAME" 3301:3301
+kubectl --namespace platform port-forward $(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}") 3301:3301
 
 
 # Redeploy orders-api
@@ -73,4 +84,12 @@ Run Load test
 k delete job load-test & k apply -f k8s/load.yml
 ```
 
+
+The first time you run elastic you will need to get the password:
+
+`kubectl get secret quickstart-es-elastic-user -o go-template='{{.data.elastic | base64decode}}'`
+
+https://0.0.0.0:5601/
+
+username: elastic
 

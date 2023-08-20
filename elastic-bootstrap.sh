@@ -1,8 +1,14 @@
 #!/bin/bash
+
+
+
+###################
+# WORK IN PROGRESS
+###################
+
 kubectl config use-context docker-desktop
 
 # Add Charts
-helm repo add signoz https://charts.signoz.io
 helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
 
@@ -17,11 +23,20 @@ DEFAULT_STORAGE_CLASS=$(kubectl get storageclass -o=jsonpath='{.items[?(@.metada
 
 kubectl patch storageclass "$DEFAULT_STORAGE_CLASS" -p '{"allowVolumeExpansion": true}'
 
-# SigNoz
-kubectl create ns platform
-helm --namespace platform install signoz signoz/signoz
+# ECK
 
-SIGNOZ_FRONTEND_POD=$(kubectl get pods --namespace platform -l "app.kubernetes.io/name=signoz,app.kubernetes.io/instance=signoz,app.kubernetes.io/component=frontend" -o jsonpath="{.items[0].metadata.name}")
+kubectl create -f https://download.elastic.co/downloads/eck/2.7.0/crds.yaml
+
+kubectl apply -f https://download.elastic.co/downloads/eck/2.7.0/operator.yaml
+
+kubectl apply -f k8s/elasticsearch.yml
+
+kubectl apply -f k8s/kibana.yml
+
+kubectl apply -f k8s/elastic-apm.yml
+
+
+
 
 # Build apps if docker images do not exist
 if [[ "$(docker images -q users-api:latest 2> /dev/null)" == "" ]] \
@@ -52,8 +67,7 @@ kubectl apply -f k8s/orders-api.yml
 # Kickoff a load test
 kubectl delete job load-test & kubectl apply -f k8s/load.yml
 
-echo "[INFO] Waiting for signoz pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
-kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s
-kubectl --namespace platform port-forward "$SIGNOZ_FRONTEND_POD" 3301:3301
+
+kubectl port-forward service/quickstart-kb-http 5601
 
 kubectl --namespace postgres port-forward $(k get pods -n postgres | grep postgres | awk '{print $1}') 5432:5432

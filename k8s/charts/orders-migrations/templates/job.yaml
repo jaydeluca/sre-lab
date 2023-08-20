@@ -7,12 +7,14 @@ spec:
     spec:
       containers:
       - name: orders-migrations
-        imagePullPolicy: Never
         image: orders-migrations:latest
+        imagePullPolicy: Never
         env:
           - name: POSTGRES_URL
-            value: jdbc:postgresql://postgres:5432/sre-lab?user=morpheus&password=findneo
+            value: jdbc:postgresql://{{ .Values.database.host }}:5432/{{ .Values.database.name }}?user={{ .Values.database.user }}&password={{ .Values.database.password }}
           - name: CHANGELOG_FILE
             value: migrations.xml
+          - name: LIQUIBASE_LOG_LEVEL
+            value: ERROR
       restartPolicy: Never
   backoffLimit: 4

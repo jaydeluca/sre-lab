@@ -1,0 +1,7 @@
+apiVersion: v2
+name: orders-migrations
+version: 0.1.0
+description: A Helm chart for running orders migrations job
+metadata:
+  name: orders-migrations
+  fullname: "{{ .Release.Name }}-{{ .Chart.Version }}"

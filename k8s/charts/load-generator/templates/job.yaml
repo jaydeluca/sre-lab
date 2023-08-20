@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: load-generator
+spec:
+  ttlSecondsAfterFinished: 10
+  template:
+    spec:
+      containers:
+      - name: load-generator
+        image: load:latest
+        imagePullPolicy: Never
+        command: ["k6", "run", "-e", "HOSTNAME=http://orders-api.production.svc.cluster.local:8080", "/scripts/srelab-api.js"]
+      restartPolicy: Never
+  backoffLimit: 1

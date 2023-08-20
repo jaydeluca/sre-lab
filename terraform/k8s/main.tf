@@ -40,6 +40,7 @@ module "load-generator" {
   namespace  = local.application_namespace
 }
 
-module "service-mesh" {
-  source = "./modules/istio"  
-}
+# @TODO FIX ME
+# module "service-mesh" {
+#   source = "./modules/istio"  
+# }

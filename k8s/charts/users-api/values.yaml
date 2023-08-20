@@ -1,0 +1,18 @@
+kubernetesClusterDomain: cluster.local
+usersApi:
+  ports:
+  - port: 9996
+    protocol: TCP
+    targetPort: 9996
+  replicas: 1
+  type: LoadBalancer
+  usersApi:
+    env:
+      insecureMode: "true"
+      otelExporterOtlpEndpoint: signoz-otel-collector.platform.svc.cluster.local:4317
+      port: "9996"
+      serviceName: users-api
+    image:
+      repository: users-api
+      tag: latest
+    imagePullPolicy: Never

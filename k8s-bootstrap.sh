@@ -12,11 +12,12 @@ kubectl apply -f k8s/postgres-pvc-pv.yaml
 kubectl apply -f k8s/postgres-deployment.yaml
 kubectl apply -f k8s/postgres-service.yaml
 
-# SigNoz
+
 DEFAULT_STORAGE_CLASS=$(kubectl get storageclass -o=jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}')
 
 kubectl patch storageclass "$DEFAULT_STORAGE_CLASS" -p '{"allowVolumeExpansion": true}'
 
+# SigNoz
 kubectl create ns platform
 helm --namespace platform install signoz signoz/signoz
 
@@ -36,6 +37,7 @@ helm install istiod istio/istiod -n istio-system --wait
 
 kubectl label namespace default istio-injection=enabled --overwrite
 istioctl install -f k8s/tracing.yml
+kubectl apply -f k8s/envoy.yml
 
 # Ingress Gateway
 kubectl create namespace istio-ingress
@@ -53,3 +55,5 @@ kubectl delete job load-test & kubectl apply -f k8s/load.yml
 echo "[INFO] Waiting for signoz pod $SIGNOZ_FRONTEND_POD to be in ready state -> Port forwarding"
 kubectl -n platform wait pod --for=condition=Ready "$SIGNOZ_FRONTEND_POD" --timeout=300s
 kubectl --namespace platform port-forward "$SIGNOZ_FRONTEND_POD" 3301:3301
+
+kubectl --namespace postgres port-forward $(k get pods -n postgres | grep postgres | awk '{print $1}') 5432:5432

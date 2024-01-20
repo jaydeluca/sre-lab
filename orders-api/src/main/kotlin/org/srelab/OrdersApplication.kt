@@ -1,13 +1,13 @@
 package org.srelab
 
 import com.google.inject.Guice
-import io.dropwizard.Application
+import io.dropwizard.core.Application
+import io.dropwizard.core.setup.Bootstrap
+import io.dropwizard.core.setup.Environment
 import io.dropwizard.db.PooledDataSourceFactory
 import io.dropwizard.hibernate.HibernateBundle
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper
 import io.dropwizard.migrations.MigrationsBundle
-import io.dropwizard.setup.Bootstrap
-import io.dropwizard.setup.Environment
 import org.srelab.core.Order
 import org.srelab.guice.ApplicationModule
 import org.srelab.guice.ClientsModule
@@ -17,12 +17,12 @@ import org.srelab.resources.HealthCheckController
 import org.srelab.resources.OrdersResource
 import java.text.SimpleDateFormat
 
-class Application : Application<ApplicationConfig>() {
+class OrdersApplication : Application<ApplicationConfig>() {
     companion object {
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            org.srelab.Application().run(*args)
+            org.srelab.OrdersApplication().run(*args)
         }
     }
 

@@ -1,7 +1,6 @@
 package org.srelab.clients
 
 import io.opentelemetry.api.OpenTelemetry
-import io.opentelemetry.instrumentation.okhttp.v3_0.OkHttpTelemetry
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -22,12 +21,6 @@ class UsersClient(
         .connectTimeout(1, TimeUnit.SECONDS)
         .callTimeout(5, TimeUnit.SECONDS)
         .build()
-
-    init {
-        if (openTelemetry != null) {
-            OkHttpTelemetry.builder(openTelemetry).build().newCallFactory(client)
-        }
-    }
 
     override fun post(url: String, body: String): String? {
         val jsonBody: RequestBody = body.toRequestBody(jsonMediaType)

@@ -2,7 +2,7 @@ package org.srelab.guice
 
 import dev.misfitlabs.kotlinguice4.KotlinModule
 import com.codahale.metrics.MetricRegistry
-import io.dropwizard.setup.Environment
+import io.dropwizard.core.setup.Environment
 import io.opentelemetry.api.GlobalOpenTelemetry
 import io.opentelemetry.api.OpenTelemetry
 import org.srelab.ApplicationConfig

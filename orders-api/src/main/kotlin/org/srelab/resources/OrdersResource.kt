@@ -5,17 +5,17 @@ import com.google.inject.Inject
 import io.dropwizard.hibernate.UnitOfWork
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.api.trace.Tracer
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.PUT
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.PathParam
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
 import org.srelab.clients.UsersClient
 import org.srelab.core.Order
 import org.srelab.dao.OrderDao
 import org.srelab.utilities.withSpan
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.PUT
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
 import kotlin.random.Random
 
 @Path("/orders")
